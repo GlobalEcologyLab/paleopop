@@ -93,10 +93,19 @@ LatinHypercubeSampler <- R6Class("LatinHypercubeSampler",
     #' @description
     #' Generates latin hypercube sample data for the parameters using corresponding distributions.
     #' @param number Number of samples to generate (default = 10).
-    generate_samples = function(number = 10) {
+    #' @param random_seed Optional seed for the random generation of samples.
+    generate_samples = function(number = 10, random_seed = NULL) {
 
       # Clear sample data
       self$sample_data <- NULL
+
+      # Set random seed when present
+      if (!is.null(random_seed)) {
+        self$random_seed <- random_seed
+      }
+      if (!is.null(self$random_seed)) {
+        set.seed(self$random_seed)
+      }
 
       # Ensure distributions are set for all parameters
       if (all(self$parameter_names %in% names(self$parameter_distributions))) {
@@ -179,6 +188,7 @@ LatinHypercubeSampler <- R6Class("LatinHypercubeSampler",
     # Sample generation attributes #
     .parameter_names = c(),
     .parameter_distributions = NULL,
+    .random_seed = NULL,
     .sample_data = NULL
 
   ), # end private
@@ -201,6 +211,15 @@ LatinHypercubeSampler <- R6Class("LatinHypercubeSampler",
         private$.parameter_distributions
       } else {
         private$.parameter_distributions <- value
+      }
+    },
+
+    #' @field random_seed A numeric random seed for repeatable sample generation.
+    random_seed = function(value) {
+      if (missing(value)) {
+        private$.random_seed
+      } else {
+        private$.random_seed <- value
       }
     },
 

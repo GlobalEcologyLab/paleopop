@@ -86,8 +86,8 @@ NicheCarryingCapacityModel <- R6Class("NicheCarryingCapacityModel",
     # .generative_requirements [inherited]
 
     # Model attributes #
-    .model_attributes = c("niche_breadth", "niche_cuts", "density", "carrying_capacities",
-                          "initial_abundances"),
+    .model_attributes = c("niche_occupancy_mask", "niche_breadth", "niche_cuts", "density",
+                          "carrying_capacities", "initial_abundances"),
     .niche_breadth = NULL,
     .niche_cuts = NULL,
     .density = NULL,
@@ -96,8 +96,8 @@ NicheCarryingCapacityModel <- R6Class("NicheCarryingCapacityModel",
 
     # Attributes accessible via model get/set methods #
     .active_attributes = c("description", "inputs", "outputs", "file_templates", "function_templates",
-                           "niche_breadth", "niche_cuts", "density", "carrying_capacities",
-                           "initial_abundances")
+                           "niche_occupancy_mask", "niche_breadth", "niche_cuts", "density",
+                           "carrying_capacities", "initial_abundances")
 
     # Errors and warnings #
     # .error_messages    [inherited]
@@ -129,6 +129,31 @@ NicheCarryingCapacityModel <- R6Class("NicheCarryingCapacityModel",
     # file_templates [inherited]
 
     # function_templates [inherited]
+
+    #' @field niche_occupancy_mask Optional binary mask (matrix or data frame) for niche carrying capacity time-series data (simulation cells by duration).
+    niche_occupancy_mask = function(value) {
+      if (missing(value)) {
+        self$generative_template$niche_occupancy_mask
+      } else {
+        if (is.character(value) && file.exists(value)) {
+          if (length(grep(".CSV", toupper(value), fixed = TRUE))) {
+            self$generative_template$niche_occupancy_mask <- read.csv(file = value)
+          } else if (length(grep(".RDS", toupper(value), fixed = TRUE))) {
+            self$generative_template$niche_occupancy_mask <- readRDS(file = value)
+          } else {
+            self$generative_template$niche_occupancy_mask <- read.table(file = value)
+          }
+          self$generative_template$niche_occupancy_mask <- as.matrix(self$generative_template$niche_occupancy_mask)
+        } else {
+          if (!is.null(value)) {
+            self$generative_template$niche_occupancy_mask <- as.matrix(value)
+            self$generative_template$niche_occupancy_mask[is.na(self$generative_template$niche_occupancy_mask)] <- 0
+          } else {
+            self$generative_template$niche_occupancy_mask <- value
+          }
+        }
+      }
+    },
 
     # Local (non-nested) model attribute accessors #
 
@@ -179,7 +204,12 @@ NicheCarryingCapacityModel <- R6Class("NicheCarryingCapacityModel",
             private$.carrying_capacities <- self$run_function("carrying_capacities")
           }
         }
-        private$.carrying_capacities
+        if (!is.null(self$niche_occupancy_mask) && !is.null(private$.carrying_capacities) &&
+            all(dim(self$niche_occupancy_mask) == dim(private$.carrying_capacities))) {
+          private$.carrying_capacities*self$niche_occupancy_mask
+        } else {
+          private$.carrying_capacities
+        }
       } else {
         private$.carrying_capacities <- value
       }

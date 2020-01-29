@@ -32,6 +32,7 @@ NicheCarryingCapacityTemplate <- R6Class("NicheCarryingCapacityTemplate",
     # .outputs            [inherited]
     # .file_templates     [inherited]
     # .function_templates [inherited]
+    .niche_occupancy_mask = NULL
 
   ), # end private
 
@@ -47,6 +48,15 @@ NicheCarryingCapacityTemplate <- R6Class("NicheCarryingCapacityTemplate",
     # file_templates [inherited]
 
     # function_templates [inherited]
+
+    #' @field niche_occupancy_mask Optional binary mask (matrix or data frame) for niche carrying capacity time-series data (simulation cells by duration).
+    niche_occupancy_mask = function(value) {
+      if (missing(value)) {
+        private$.niche_occupancy_mask
+      } else {
+        private$.niche_occupancy_mask <- value
+      }
+    }
 
   ) # end active
 )

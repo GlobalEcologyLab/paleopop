@@ -113,6 +113,7 @@ PaleoPopModel <- R6Class("PaleoPopModel",
         (is.numeric(self$initial_abundances) && all(self$initial_abundances >= 0) && self$is_consistent("initial_abundances")) &&
         (is.numeric(self$growth_rate_max) && self$growth_rate_max >= 0) &&
         (is.null(self$local_threshold) || (is.numeric(self$local_threshold) && self$local_threshold >= 0)) &&
+        (is.null(self$occupancy_threshold) || (is.numeric(self$occupancy_threshold) && self$occupancy_threshold >= 0)) &&
         (is.null(self$dispersal_target_k_threshold) || (is.numeric(self$dispersal_target_k_threshold) && self$dispersal_target_k_threshold >= 0)) &&
         (is.numeric(self$carrying_capacities) && all(self$carrying_capacities >= 0) && self$is_consistent("carrying_capacities")) &&
         # Dispersal and correlation attributes:
@@ -156,7 +157,7 @@ PaleoPopModel <- R6Class("PaleoPopModel",
           complete_list[[param]] <- (is.numeric(param_value) && all(param_value >= 0) && self$is_consistent(param))
         } else if (param %in% c("growth_rate_max")) {
           complete_list[[param]] <- (is.numeric(param_value) && param_value >= 0)
-        } else if (param %in% c("local_threshold", "dispersal_target_k_threshold")) {
+        } else if (param %in% c("local_threshold", "occupancy_threshold", "dispersal_target_k_threshold")) {
           complete_list[[param]] <- (is.null(param_value) || (is.numeric(param_value) && param_value >= 0))
         # Dispersal and correlation attributes:
         } else if (param %in% c("dispersal_data")) {
@@ -211,13 +212,14 @@ PaleoPopModel <- R6Class("PaleoPopModel",
     # .attribute_aliases [inherited]
 
     # Model attributes #
-    .model_attributes = c("duration", "years_per_step", "transition_rate", "standard_deviation", "populations",
-                          "coordinates", "initial_abundances", "growth_rate_max", "local_threshold",
-                          "dispersal_target_k_threshold", "carrying_capacities", "dispersal_data",
-                          "compact_decomposition", "harvest", "harvest_max", "harvest_g", "harvest_z",
-                          "harvest_max_n", "human_densities", "results_selection"),
+    .model_attributes = c("duration", "years_per_step", "random_seed", "transition_rate", "standard_deviation",
+                          "populations", "coordinates", "initial_abundances", "growth_rate_max", "local_threshold",
+                          "occupancy_threshold", "dispersal_target_k_threshold", "carrying_capacities",
+                          "dispersal_data", "compact_decomposition", "harvest", "harvest_max", "harvest_g",
+                          "harvest_z", "harvest_max_n", "human_densities", "results_selection"),
     # .duration                      [inherited]
     .years_per_step = NULL,
+    .random_seed = NULL,
     .transition_rate = NULL,
     .standard_deviation = NULL,
     # Population settings:
@@ -226,6 +228,7 @@ PaleoPopModel <- R6Class("PaleoPopModel",
     # .initial_abundances            [inherited]
     .growth_rate_max = NULL,
     .local_threshold = NULL,
+    .occupancy_threshold = NULL,
     .dispersal_target_k_threshold = NULL,
     # .carrying_capacities           [inherited]
     .dispersal_data = NULL,
@@ -239,11 +242,11 @@ PaleoPopModel <- R6Class("PaleoPopModel",
     .results_selection = NULL,
 
     # Attributes accessible via model get/set methods #
-    .active_attributes = c("duration", "years_per_step", "transition_rate", "standard_deviation", "populations",
-                           "coordinates", "initial_abundances", "growth_rate_max", "local_threshold",
-                           "dispersal_target_k_threshold", "carrying_capacities", "dispersal_data",
-                           "compact_decomposition", "harvest", "harvest_max", "harvest_g", "harvest_z",
-                           "harvest_max_n", "human_densities", "results_selection")
+    .active_attributes = c("duration", "years_per_step", "random_seed", "transition_rate", "standard_deviation",
+                           "populations", "coordinates", "initial_abundances", "growth_rate_max", "local_threshold",
+                           "occupancy_threshold", "dispersal_target_k_threshold", "carrying_capacities",
+                           "dispersal_data", "compact_decomposition", "harvest", "harvest_max", "harvest_g",
+                           "harvest_z", "harvest_max_n", "human_densities", "results_selection")
 
     # Template model for fixed (non-sampled) attributes for shallow cloning
     # .template_model                [inherited]
@@ -273,6 +276,23 @@ PaleoPopModel <- R6Class("PaleoPopModel",
           self$template_model$years_per_step
         } else {
           self$template_model$years_per_step <- value
+        }
+      }
+    },
+
+    #' @field random_seed Number to seed the random number generation for stochasticity.
+    random_seed = function(value) {
+      if (is.null(self$template_model) || "random_seed" %in% self$sample_attributes) {
+        if (missing(value)) {
+          private$.random_seed
+        } else {
+          private$.random_seed <- value
+        }
+      } else {
+        if (missing(value)) {
+          self$template_model$random_seed
+        } else {
+          self$template_model$random_seed <- value
         }
       }
     },
@@ -347,6 +367,23 @@ PaleoPopModel <- R6Class("PaleoPopModel",
           self$template_model$local_threshold
         } else {
           self$template_model$local_threshold <- value
+        }
+      }
+    },
+
+    #' @field occupancy_threshold Threshold for the number of populations occupied (that needs to be exceeded) for all populations to persist.
+    occupancy_threshold = function(value) {
+      if (is.null(self$template_model) || "occupancy_threshold" %in% self$sample_attributes) {
+        if (missing(value)) {
+          private$.occupancy_threshold
+        } else {
+          private$.occupancy_threshold <- value
+        }
+      } else {
+        if (missing(value)) {
+          self$template_model$occupancy_threshold
+        } else {
+          self$template_model$occupancy_threshold <- value
         }
       }
     },

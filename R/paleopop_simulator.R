@@ -50,6 +50,10 @@ paleopop_simulator <- function(inputs) {
   # General model settings
   duration <- inputs$duration
   years_per_step <- inputs$years_per_step
+  random_seed <- inputs$random_seed
+  if (!is.null(random_seed)) {
+    set.seed(random_seed)
+  }
 
   # Transition rate and standard deviation
   transition_rate <- inputs$transition_rate
@@ -61,6 +65,7 @@ paleopop_simulator <- function(inputs) {
   population_abundances <- array(inputs$initial_abundances, c(1, populations)) # single column matrix for faster dispersal calculations
   growth_rate_max <- inputs$growth_rate_max
   local_threshold <- inputs$local_threshold
+  occupancy_threshold <- inputs$occupancy_threshold
   dispersal_target_k_threshold <- inputs$dispersal_target_k_threshold
   carrying_capacities <- inputs$carrying_capacities
 
@@ -175,6 +180,13 @@ paleopop_simulator <- function(inputs) {
 
     # Set transitions for each population
     transitions <- array(transition_rate, populations)
+
+    # Apply occupancy threshold when present
+    if (!is.null(occupancy_threshold)) {
+      if (length(which(as.logical(population_abundances))) <= occupancy_threshold) {
+        population_abundances[] <- 0
+      }
+    }
 
     # Load carrying capacity for each population for time if temporal trend in K
     if (carrying_capacity_t_max > 1) {
