@@ -1,0 +1,30 @@
+Package: paleopop
+Type: Package
+Title: Toolset for Coupled Niche-population Paleo-climatic Models
+Version: 1.0.0
+Author: Global Ecology Lab
+Maintainer: Sean Haythorne <sean.haythorne@adelaide.edu.au>
+Description: The toolset provides a collection of interoperable R6 classes for simulating multiple
+    spatially-explicit demographic-based population models that utilize paleo-climatic niche model 
+    data. Included are classes for building population models and associated models for representing 
+    niche carrying capacities (derived from paleo-climatic niche models), spatial dispersal, and 
+    human density (for impact/harvesting functionality). A Latin hypercube sampling tool is provided 
+    to generate sampled parameters for multiple model simulations. A multi-simulation manager tool 
+    is provided to run and log simulations, with the assistance of model generator and simulator 
+    classes, and to collect simulation results. The toolset utilizes a hierarchy of class 
+    inheritance, with additional abstract classes being defined with reusable attributes and 
+    methods.
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.0.2
+Imports:
+    doParallel (>= 1.0.14),
+    foreach (>= 1.4.4),
+    gdistance (>= 1.2.2),
+    geosphere (>= 1.5.7),
+    lhs (>= 1.0),
+    metRology (>= 0.9.28.1),
+    R6 (>= 2.4.0),
+    raster (>= 2.8.19),
+    sf (>= 0.7.7)
