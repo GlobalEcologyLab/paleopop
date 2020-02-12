@@ -4,7 +4,7 @@
 \alias{HumanDensityTemplate}
 \title{R6 Class Representing a Nested Container for Human Density Model Attributes}
 \description{
-R6 class representing a nested container for generative model attributes that are
+R6 class representing a nested container for human density model attributes that are
 maintained when new model clones are created. The container maintains input and
 output attribute names, file and function templates, and human density model
 attributes that need to be maintained when a new clone object is generated for a
@@ -31,6 +31,12 @@ sample simulation.
 \item{\code{sd_number}}{Number of standard deviations from the sample distribution mean to the lower and upper limits (default = 1).}
 
 \item{\code{distrib_data}}{Calculated sample distribution minimum, maximum and mean carrying capacity time-series data, combined, scaled, and zero sets eliminated for generation efficiency.}
+
+\item{\code{uses_correlations}}{A boolean to indicate that a correlation model is used for generating correlated random deviates.}
+
+\item{\code{correlation_model}}{A correlation model for generating correlated random deviates (type of \emph{CorrelationModel} or an inherited class).}
+
+\item{\code{temporal_correlation}}{Absolute correlation coefficient between simulation time steps for all grid cells (0-1; default = 1).}
 
 \item{\code{decimals}}{Number of decimal places applied to the calculated human densities (default: NULL = no rounding).}
 }

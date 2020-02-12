@@ -17,13 +17,39 @@ test_class
 test_class$new_clone()
 
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{object_generator}}{Class object generator used to create new clones, particularly for user inheritance.}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
+\item \href{#method-new}{\code{GenericClass$new()}}
 \item \href{#method-new_clone}{\code{GenericClass$new_clone()}}
 \item \href{#method-read_from_rds}{\code{GenericClass$read_from_rds()}}
 \item \href{#method-save_to_rds}{\code{GenericClass$save_to_rds()}}
 \item \href{#method-clone}{\code{GenericClass$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\subsection{Method \code{new()}}{
+Initialization method saves an object generator for new cloning.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GenericClass$new(object_generator = NULL, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{object_generator}}{Class object generator used to create new clones, particularly for user inheritance.}
+
+\item{\code{...}}{Parameters passed individually (ignored).}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}

@@ -32,6 +32,7 @@ DispersalTemplate <- R6Class("DispersalTemplate",
     # .outputs            [inherited]
     # .file_templates     [inherited]
     # .function_templates [inherited]
+    .barrier_sea_ice_model = NULL,
     .coordinates = NULL,
     .distance_classes = NULL,
     .distance_data = NULL,
@@ -54,6 +55,15 @@ DispersalTemplate <- R6Class("DispersalTemplate",
 
     # function_templates [inherited]
 
+    #' @field barrier_sea_ice_model A BarrierSeaIceModel object for dispersal distance multiplier data.
+    barrier_sea_ice_model = function(value) {
+      if (missing(value)) {
+        private$.barrier_sea_ice_model
+      } else {
+        private$.barrier_sea_ice_model <- value
+      }
+    },
+    
     #' @field coordinates Data frame (or matrix) of X-Y population coordinates (WGS84) in longitude (degrees West) and latitude (degrees North).
     coordinates = function(value) {
       if (missing(value)) {

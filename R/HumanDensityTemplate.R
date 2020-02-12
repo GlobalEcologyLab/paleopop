@@ -1,7 +1,7 @@
 #' R6 Class Representing a Nested Container for Human Density Model Attributes
 #'
 #' @description
-#' R6 class representing a nested container for generative model attributes that are
+#' R6 class representing a nested container for human density model attributes that are
 #' maintained when new model clones are created. The container maintains input and
 #' output attribute names, file and function templates, and human density model
 #' attributes that need to be maintained when a new clone object is generated for a
@@ -23,8 +23,9 @@ HumanDensityTemplate <- R6Class("HumanDensityTemplate",
 
     #' @description
     #' Initialization method sets default values.
-    initialize = function() { # set default standard deviation
+    initialize = function() { # # set default standard deviation and temporal correlation
       self$sd_number <- 1
+      self$temporal_correlation <- 1
       super$initialize()
     }
 
@@ -46,6 +47,9 @@ HumanDensityTemplate <- R6Class("HumanDensityTemplate",
     .max_upper = NULL,
     .sd_number = NULL,
     .distrib_data = NULL,
+    .uses_correlations = FALSE,
+    .correlation_model = NULL,
+    .temporal_correlation = NULL,
     .decimals = NULL
   ), # end private
 
@@ -134,6 +138,33 @@ HumanDensityTemplate <- R6Class("HumanDensityTemplate",
       }
     },
 
+    #' @field uses_correlations A boolean to indicate that a correlation model is used for generating correlated random deviates.
+    uses_correlations = function(value) {
+      if (missing(value)) {
+        private$.uses_correlations
+      } else {
+        private$.uses_correlations <- value
+      }
+    },
+    
+    #' @field correlation_model A correlation model for generating correlated random deviates (type of \emph{CorrelationModel} or an inherited class).
+    correlation_model = function(value) {
+      if (missing(value)) {
+        private$.correlation_model
+      } else {
+        private$.correlation_model <- value
+      }
+    },
+    
+    #' @field temporal_correlation Absolute correlation coefficient between simulation time steps for all grid cells (0-1; default = 1).
+    temporal_correlation = function(value) {
+      if (missing(value)) {
+        private$.temporal_correlation
+      } else {
+        private$.temporal_correlation <- value
+      }
+    },
+    
     #' @field decimals Number of decimal places applied to the calculated human densities (default: NULL = no rounding).
     decimals = function(value) {
       if (missing(value)) {

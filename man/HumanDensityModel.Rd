@@ -41,11 +41,23 @@ It dynamically generates attributes defined as \emph{outputs} (default:
 
 \item{\code{distrib_data}}{Calculated sample distribution minimum, maximum and mean carrying capacity time-series data.}
 
+\item{\code{uses_correlations}}{A boolean to indicate that a correlation model is used for generating correlated random deviates.}
+
+\item{\code{correlation_model}}{A correlation model for generating correlated random deviates (type of \emph{CorrelationModel} or an inherited class).}
+
+\item{\code{temporal_correlation}}{Absolute correlation coefficient between simulation time steps for all grid cells (0-1; default = 1).}
+
 \item{\code{decimals}}{Number of decimal places applied to the calculated human densities (default: NULL = no rounding).}
 
 \item{\code{distrib_mean_matrix}}{Calculated sample distribution mean carrying capacity time-series matrix.}
 
 \item{\code{human_density_sample}}{Human density sample number (or file index) or probability (for default generation).}
+
+\item{\code{human_density_lower}}{Human density lower probability for correlated generation.}
+
+\item{\code{human_density_upper}}{Human density upper probability for correlated generation.}
+
+\item{\code{human_density_seed}}{Human density random seed for repeatable correlated generation.}
 
 \item{\code{human_densities}}{Calculated sample human density values (simulation cells by duration).}
 }
@@ -57,7 +69,7 @@ It dynamically generates attributes defined as \emph{outputs} (default:
 \item \href{#method-new}{\code{HumanDensityModel$new()}}
 \item \href{#method-generative_requirements_satisfied}{\code{HumanDensityModel$generative_requirements_satisfied()}}
 \item \href{#method-calculate_sampling_parameters}{\code{HumanDensityModel$calculate_sampling_parameters()}}
-\item \href{#method-calculate_human_density}{\code{HumanDensityModel$calculate_human_density()}}
+\item \href{#method-calculate_human_densities}{\code{HumanDensityModel$calculate_human_densities()}}
 \item \href{#method-clone}{\code{HumanDensityModel$clone()}}
 }
 }
@@ -136,11 +148,11 @@ Calculates the minimum, mean and maximum human density values for each simulatio
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-calculate_human_density"></a>}}
-\subsection{Method \code{calculate_human_density()}}{
-Calculates the human density values via the (triangular) sampling distribution for each simulation grid and time step for each grid cell.
+\if{html}{\out{<a id="method-calculate_human_densities"></a>}}
+\subsection{Method \code{calculate_human_densities()}}{
+Calculates the human density values via the (triangular) sampling distribution for each simulation grid and time step utilizing correlated deviates for each grid cell.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HumanDensityModel$calculate_human_density()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{HumanDensityModel$calculate_human_densities()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{

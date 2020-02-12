@@ -136,7 +136,7 @@ New object of the inherited class.
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_attribute_names"></a>}}
 \subsection{Method \code{get_attribute_names()}}{
-Returns a Array of all attribute names including public and private model attributes, as well as attached attributes, error and warning messages.
+Returns an array of all attribute names including public and private model attributes, as well as attached attributes, error and warning messages.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{GenericModel$get_attribute_names()}\if{html}{\out{</div>}}
 }

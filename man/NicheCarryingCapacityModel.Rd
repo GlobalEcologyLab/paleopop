@@ -25,6 +25,8 @@ defined as \emph{outputs} (default: \emph{carrying_capacities} and
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
+\item{\code{niche_occupancy_mask}}{Optional binary mask (matrix or data frame) for niche carrying capacity time-series data (simulation cells by duration).}
+
 \item{\code{niche_breadth}}{Sampled niche model breadth (typically part of the identifier for a climate niche model data file).}
 
 \item{\code{niche_cuts}}{Sampled niche model cuts (typically part of the identifier for a climate niche model data file).}

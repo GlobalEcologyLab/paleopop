@@ -242,5 +242,11 @@ NicheCarryingCapacityModel <- R6Class("NicheCarryingCapacityModel",
       }
     }
 
+    # Errors and warnings #
+    
+    # error_messages    [inherited]
+    
+    # warning_messages  [inherited]
+    
   ) # end active
 )

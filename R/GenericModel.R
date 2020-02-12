@@ -85,6 +85,7 @@ GenericModel <- R6Class("GenericModel",
         self$attribute_aliases <- attribute_aliases
       }
       self$set_attributes(params = params, ...)
+      super$initialize(...)
     },
 
     #' @description
@@ -98,7 +99,7 @@ GenericModel <- R6Class("GenericModel",
     # New methods #
 
     #' @description
-    #' Returns a Array of all attribute names including public and private model attributes, as well as attached attributes, error and warning messages.
+    #' Returns an array of all attribute names including public and private model attributes, as well as attached attributes, error and warning messages.
     #' @return Array of all attribute names.
     get_attribute_names = function() {
       return(c(self$model_attributes, private$.model_attributes, names(self$attached), "error_messages", "warning_messages"))
@@ -152,6 +153,8 @@ GenericModel <- R6Class("GenericModel",
           eval(parse(text=sprintf("private$.%s <- params$%s", attribute, param)))
         } else if (attribute %in% c("attribute_aliases", "error_messages", "warning_messages")) {
           eval(parse(text=sprintf("self$%s <- params$%s", attribute, param)))
+        } else if (attribute %in% c("object_generator")) {
+          # ignore - handled in generic class
         } else { # attach
           eval(parse(text=sprintf("self$attached$%s <- params$%s", attribute, param)))
         }

@@ -13,6 +13,13 @@ for a sample simulation.
 \section{Super class}{
 \code{\link[paleopop:GenerativeTemplate]{paleopop::GenerativeTemplate}} -> \code{NicheCarryingCapacityTemplate}
 }
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{niche_occupancy_mask}}{Optional binary mask (matrix or data frame) for niche carrying capacity time-series data (simulation cells by duration).}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{

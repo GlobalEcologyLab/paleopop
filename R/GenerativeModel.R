@@ -332,6 +332,13 @@ GenerativeModel <- R6Class("GenerativeModel",
     }
 
     # Local (non-nested) model attribute accessors #
+    #   in inherited classes
 
+    # Errors and warnings #
+    
+    # error_messages    [inherited]
+    
+    # warning_messages  [inherited]
+    
   ) # end active
 )

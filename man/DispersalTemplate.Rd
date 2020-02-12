@@ -16,6 +16,8 @@ simulation.
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
+\item{\code{barrier_sea_ice_model}}{A BarrierSeaIceModel object for dispersal distance multiplier data.}
+
 \item{\code{coordinates}}{Data frame (or matrix) of X-Y population coordinates (WGS84) in longitude (degrees West) and latitude (degrees North).}
 
 \item{\code{distance_classes}}{Vector of distance interval boundaries (in km) for calculating discrete dispersal rates.}

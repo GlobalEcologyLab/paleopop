@@ -29,6 +29,8 @@ defined as \emph{outputs} (default: \emph{dispersal_data}) given sampled
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
+\item{\code{barrier_sea_ice_model}}{A \emph{BarrierSeaIceModel} (or inherited class) object for dispersal distance multiplier data.}
+
 \item{\code{coordinates}}{Data frame (or matrix) of X-Y population coordinates (WGS84) in longitude (degrees West) and latitude (degrees North).}
 
 \item{\code{distance_classes}}{Vector of distance interval boundaries (in km) for calculating discrete dispersal rates.}
@@ -89,11 +91,12 @@ defined as \emph{outputs} (default: \emph{dispersal_data}) given sampled
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
 \subsection{Method \code{new()}}{
-Initialization method sets the generative template and requirements as well as any attributes passed via a \emph{params} list or individually.
+Initialization method sets the generative template and requirements, optionally the barrier/sea-ice model, as well as any attributes passed via a \emph{params} list or individually.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{DispersalModel$new(
   generative_template = NULL,
   generative_requirements = NULL,
+  barrier_sea_ice_model = NULL,
   attribute_aliases = NULL,
   ...
 )}\if{html}{\out{</div>}}
@@ -105,6 +108,8 @@ Initialization method sets the generative template and requirements as well as a
 \item{\code{generative_template}}{Optional nested object for generative dispersal model attributes that need to be maintained when a new clone object is generated for a sample simulation.}
 
 \item{\code{generative_requirements}}{Optional list of attribute names and the template setting (\emph{"file"} or \emph{"function"}) that is required to generate their values (otherwise default functionality is used).}
+
+\item{\code{barrier_sea_ice_model}}{Optional \emph{BarrierSeaIceModel} (or inherited class) object for dispersal distance multiplier data.}
 
 \item{\code{attribute_aliases}}{Optional list of extra alias names for model attributes (form: alias = "attribute") to be used with the set and get attributes methods.}
 

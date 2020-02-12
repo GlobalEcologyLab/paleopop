@@ -10,19 +10,21 @@
 #'                                       coordinates = array(1:10, c(5, 2)),
 #'                                       correlation_matrix = (diag(5)*0.8 + 0.2))
 #' nested_model <- PopulationModel$new(template = template_model)
-#' nested_model$set_sample_attributes(params = c("initial_abundances",
-#'                                               "carrying_capacities",
+#' # Set sample attributes
+#' nested_model$set_sample_attributes(params = c("carrying_capacities",
 #'                                               "dispersal_matrix"),
+#'                                    initial_abundances = seq(10, 30, by = 5),
 #'                                    human_densities = array((1:50)/50, c(5, 10)))
-#' # Set sample attributes with aliases
-#' nested_model$set_sample_aliases(abundances = "initial_abundances")
-#' nested_model$get_sample_aliases()
-#' nested_model$set_sample_attributes(params = list(dispersals = (diag(5)*-0.1 + 0.1),
-#'                                                  abundances = seq(10, 30, by = 5)),
-#'                                    capacities = matrix(seq(50, 32, by = -2),
-#'                                                        nrow = 5, ncol = 10,
-#'                                                        byrow = TRUE))
-#' nested_model$get_template()$get_attributes()
+#' # Set/get via aliases
+#' nested_model$attribute_aliases <- list(abundances = "initial_abundances",
+#'                                        capacities = "carrying_capacities",
+#'                                        dispersals = "dispersal_matrix")
+#' nested_model$set_attributes(capacities = matrix(seq(80, 35, by = -5), nrow = 5, 
+#'                                                 ncol = 10, byrow = TRUE),
+#'                             dispersals = (diag(5)*-0.05 + 0.05))
+#' nested_model$get_attributes(c("abundances", "capacities", "dispersals"))
+#' # Nested model gets template model attributes too
+#' nested_model$template_model$get_attributes()
 #' nested_model$get_attributes()
 #' # Consistency and completeness
 #' nested_model$is_consistent()
@@ -244,6 +246,10 @@ PopulationModel <- R6Class("PopulationModel",
 
     # Vector of sample attributes (names)
     .sample_attributes = NULL
+
+    # Errors and warnings #
+    # .error_messages    [inherited]
+    # .warning_messages  [inherited]
 
   ), # end private
 
@@ -467,6 +473,10 @@ PopulationModel <- R6Class("PopulationModel",
         self$set_sample_attributes(params = params)
       }
     }
+    
+    # error_messages    [inherited]
+    
+    # warning_messages  [inherited]
 
   ) # end active
 )

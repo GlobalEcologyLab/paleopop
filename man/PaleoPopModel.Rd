@@ -22,13 +22,19 @@ attributes utilized by the default paleopop simulator function.
 \describe{
 \item{\code{years_per_step}}{Number of years per time step.}
 
+\item{\code{random_seed}}{Number to seed the random number generation for stochasticity.}
+
 \item{\code{transition_rate}}{Rate of transition (or fecundity) between generations.}
 
 \item{\code{standard_deviation}}{Standard deviation applied to transition rates.}
 
-\item{\code{growth_rate_max}}{Maximum growth rate.}
+\item{\code{density_dependence}}{Density dependence type ("contest", "scramble", or "ceiling").}
+
+\item{\code{growth_rate_max}}{Maximum growth rate (for "contest" or "scramble" density dependence).}
 
 \item{\code{local_threshold}}{Abundance threshold (that needs to be exceeded) for each population to persist.}
+
+\item{\code{occupancy_threshold}}{Threshold for the number of populations occupied (that needs to be exceeded) for all populations to persist.}
 
 \item{\code{dispersal_target_k_threshold}}{Target population carrying capacity threshold for density dependent dispersal.}
 

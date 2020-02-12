@@ -45,6 +45,7 @@ GenericResultsManager <- R6Class("GenericResultsManager",
       if (!is.null(self$error_messages)) {
         stop(self$error_messages, call. = FALSE)
       }
+      super$initialize()
     },
 
     #' @description

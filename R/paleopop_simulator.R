@@ -15,12 +15,15 @@
 #'   \describe{
 #'     \item{\code{duration}}{Number of simulation time steps.}
 #'     \item{\code{years_per_step}}{Number of years per time step.}
+#'     \item{\code{random_seed}}{Number to seed the random number generation for stochasticity.}
 #'     \item{\code{transition_rate}}{Rate of transition (or fecundity) between generations.}
 #'     \item{\code{standard_deviation}}{Standard deviation applied to transition rates.}
 #'     \item{\code{populations}}{Number of populations.}
 #'     \item{\code{initial_abundances}}{Array of initial abundances for each population.}
-#'     \item{\code{growth_rate_max}}{Maximum growth rate.}
+#'     \item{\code{density_dependence}}{Density dependence type ("contest", "scramble", or "ceiling").}
+#'     \item{\code{growth_rate_max}}{Maximum growth rate (for "contest" or "scramble" density dependence).}
 #'     \item{\code{local_threshold}}{Abundance threshold (that needs to be exceeded) for each population to persist.}
+#'     \item{\code{occupancy_threshold}}{Threshold for the number of populations occupied (that needs to be exceeded) for all populations to persist.}
 #'     \item{\code{dispersal_target_k_threshold}}{Target population carrying capacity threshold for density dependent dispersal.}
 #'     \item{\code{carrying_capacities}}{Matrix of carrying capacities (\emph{populations} rows by \emph{duration} columns).}
 #'     \item{\code{dispersal_data}}{Data frame of non-zero dispersal rates and indices for the construction of compact matrices (columns: \emph{target_pop}, \emph{source_pop}, \emph{emigrant_row}, \emph{immigrant_row}, \emph{dispersal_rate}).}
@@ -63,6 +66,10 @@ paleopop_simulator <- function(inputs) {
   # Population settings
   populations <- inputs$populations
   population_abundances <- array(inputs$initial_abundances, c(1, populations)) # single column matrix for faster dispersal calculations
+  density_dependence <- inputs$density_dependence
+  if (is.null(density_dependence)) {
+    density_dependence <- "none"
+  }
   growth_rate_max <- inputs$growth_rate_max
   local_threshold <- inputs$local_threshold
   occupancy_threshold <- inputs$occupancy_threshold
@@ -74,9 +81,9 @@ paleopop_simulator <- function(inputs) {
   # Create re-usable dispersal structures
   dispersal_present <- !is.null(inputs$dispersal_data)
   if (dispersal_present) {
-
+    
     # Unpack dispersal data and determine compact matrix dimenstions
-    dispersal_data <- inputs$dispersal_data
+    dispersal_data <- inputs$dispersal_data[[1]]
     dispersal_compact_rows <- max(dispersal_data[, c("emigrant_row", "immigrant_row")])
 
     # Create compact array of zeros for quick initialization
@@ -86,6 +93,13 @@ paleopop_simulator <- function(inputs) {
     dispersal_compact_matrix <- dispersal_zero_array
     dispersal_compact_matrix[as.matrix(dispersal_data[, c("emigrant_row", "source_pop")])] <- dispersal_data$dispersal_rate
 
+    # Are dispersals changing over time?
+    dispersals_change_over_time <- (length(inputs$dispersal_data) > 1)
+    if (dispersals_change_over_time) {
+      dispersal_data_changes <- inputs$dispersal_data
+      dispersal_data_changes[[1]] <- dispersal_data_changes[[1]][NULL,]
+    }
+    
     # Does dispersal dependent on target population carrying capacity K?
     dispersal_depends_on_target_pop_k <- (!is.null(dispersal_target_k_threshold) && dispersal_target_k_threshold > 0)
     if (dispersal_depends_on_target_pop_k) {
@@ -200,7 +214,7 @@ paleopop_simulator <- function(inputs) {
     occupied_populations <- length(occupied_indices)
     zero_indices <- which(carrying_capacity <= 0 & as.logical(population_abundances))
 
-    # Currently replicating harvest annual calculations (variation of Beverton-Holt model for density dependence)
+    # Currently replicating harvest annual calculations (variation of Beverton-Holt or Ricker for density dependence)
     if (occupied_populations) {
 
       # Focus on occupied populations
@@ -209,8 +223,14 @@ paleopop_simulator <- function(inputs) {
 
       # Calculate annual growth rate
       annual_growth_rate_max <- max(growth_rate_max^(1/years_per_step), 1)
-      annual_growth_rate <- annual_growth_rate_max*selected_carrying_capacity/
-        (annual_growth_rate_max*selected_population_abundances - selected_population_abundances + selected_carrying_capacity)
+      if (density_dependence == "contest") {
+        annual_growth_rate <- annual_growth_rate_max*selected_carrying_capacity/
+          (annual_growth_rate_max*selected_population_abundances - selected_population_abundances + selected_carrying_capacity)
+      } else if (density_dependence == "scramble") {
+        annual_growth_rate <- annual_growth_rate_max*exp(-1*log(annual_growth_rate_max)*selected_population_abundances/selected_carrying_capacity)
+      } else { # ceiling or none
+        annual_growth_rate <- transition_rate^(1/years_per_step)
+      }
 
       # Adjust the growth rate to simulate human impact/harvesting
       if (harvest) {
@@ -290,12 +310,27 @@ paleopop_simulator <- function(inputs) {
     if (occupied_populations) {
       population_abundances[occupied_indices] <- rpois(occupied_populations, transitions[occupied_indices]*population_abundances[occupied_indices])
     }
+    
+    # Limit abundances to carrying capacities when "ceiling" density dependence
+    if (density_dependence == "ceiling") {
+      above_capacity_indices <- occupied_indices[which(population_abundances[occupied_indices] > carrying_capacity[occupied_indices])]
+      if (length(above_capacity_indices)) {
+        population_abundances[above_capacity_indices] <- carrying_capacity[above_capacity_indices]
+      }
+    }
 
     ## Dispersal calculations ##
     if (occupied_populations && dispersal_present) {
 
+      # Apply any spatio-temporal dispersal changes
+      if (tm == 1) {
+        dispersal_compact_matrix_tm <- dispersal_compact_matrix
+      } else if (dispersals_change_over_time && nrow(dispersal_data_changes[[tm]])) { # and tm > 1
+        dispersal_compact_matrix_tm[as.matrix(dispersal_data_changes[[tm]][,c("emigrant_row","source_pop")])] <- dispersal_data_changes[[tm]]$dispersal_rate
+      }
+      
       # Select dispersals for occupied populations and their non-zero indices
-      occupied_dispersals <- dispersal_compact_matrix[, occupied_indices]
+      occupied_dispersals <- dispersal_compact_matrix_tm[, occupied_indices]
       occupied_dispersal_indices <- which(as.logical(occupied_dispersals)) # > 0
 
       # Modify dispersal rates when dispersal depends on target population carrying capacity K

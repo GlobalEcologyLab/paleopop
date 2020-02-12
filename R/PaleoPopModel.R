@@ -74,8 +74,10 @@ PaleoPopModel <- R6Class("PaleoPopModel",
               consistent_array[i] <- (is.matrix(param_value) && nrow(param_value) == self$populations && ncol(param_value) == self$duration)
             # Dispersal and correlation:
             } else if (param %in% c("dispersal_data")) {
-              consistent_array[i] <- (is.data.frame(param_value) && ncol(param_value) == 5 &&
-                                        min(param_value[, 1:4]) >= 1 && max(param_value[, 1:4]) <= self$populations)
+              consistent_array[i] <- (is.list(param_value) && (length(param_value) == 1 || length(param_value) == self$duration) &&
+                                        is.data.frame(param_value[[1]]) && ncol(param_value[[1]]) == 5 &&
+                                        min(param_value[[1]][,1]) >= 1 && max(param_value[[1]][,1]) <= self$populations &&
+                                        min(param_value[[1]][,2]) >= 1 && max(param_value[[1]][,2]) <= self$populations)
             } else if (param %in% c("compact_decomposition")) {
               consistent_array[i] <- (is.list(param_value) && "matrix" %in% names(param_value) && "map" %in% names(param_value) &&
                                         is.matrix(param_value$matrix) && ncol(param_value$matrix) == self$populations &&
@@ -111,13 +113,14 @@ PaleoPopModel <- R6Class("PaleoPopModel",
         (is.numeric(self$populations) && self$populations > 0) &&
         (is.null(self$coordinates) || (is.numeric(self$coordinates$x) && is.numeric(self$coordinates$y) && self$is_consistent("coordinates"))) &&
         (is.numeric(self$initial_abundances) && all(self$initial_abundances >= 0) && self$is_consistent("initial_abundances")) &&
-        (is.numeric(self$growth_rate_max) && self$growth_rate_max >= 0) &&
+        (is.null(self$density_dependence) || self$density_dependence == "ceiling" || 
+           (self$density_dependence %in%  c("contest", "scramble") && is.numeric(self$growth_rate_max) && self$growth_rate_max >= 0)) &&
         (is.null(self$local_threshold) || (is.numeric(self$local_threshold) && self$local_threshold >= 0)) &&
         (is.null(self$occupancy_threshold) || (is.numeric(self$occupancy_threshold) && self$occupancy_threshold >= 0)) &&
         (is.null(self$dispersal_target_k_threshold) || (is.numeric(self$dispersal_target_k_threshold) && self$dispersal_target_k_threshold >= 0)) &&
         (is.numeric(self$carrying_capacities) && all(self$carrying_capacities >= 0) && self$is_consistent("carrying_capacities")) &&
         # Dispersal and correlation attributes:
-        (is.null(self$dispersal_data) || (is.numeric(as.matrix(self$dispersal_data)) && all(self$dispersal_data >= 0) && self$is_consistent("dispersal_data"))) &&
+        (is.null(self$dispersal_data) || (is.list(self$dispersal_data) && is.numeric(as.matrix(self$dispersal_data[[1]])) && self$is_consistent("dispersal_data"))) &&
         (is.null(self$compact_decomposition) || (is.list(self$compact_decomposition) && "matrix" %in% names(self$compact_decomposition) &&
                                                    "map" %in% names(self$compact_decomposition) && is.numeric(self$compact_decomposition$matrix) &&
                                                    all(self$compact_decomposition$matrix >= 0) && self$is_consistent("compact_decomposition"))) &&
@@ -155,13 +158,19 @@ PaleoPopModel <- R6Class("PaleoPopModel",
           complete_list[[param]] <- (is.null(param_value) || ((is.numeric(param_value$x) && is.numeric(param_value$y) && self$is_consistent(param))))
         } else if (param %in% c("initial_abundances", "carrying_capacities")) {
           complete_list[[param]] <- (is.numeric(param_value) && all(param_value >= 0) && self$is_consistent(param))
+        } else if (param %in% c("density_dependence")) {
+          complete_list[[param]] <- (is.null(param_value) || (is.character(param_value) && param_value %in%  c("contest", "scramble", "ceiling")))
         } else if (param %in% c("growth_rate_max")) {
-          complete_list[[param]] <- (is.numeric(param_value) && param_value >= 0)
+          if (!is.null(self$density_dependence) && self$density_dependence %in%  c("contest", "scramble")) {
+            complete_list[[param]] <- (is.numeric(param_value) && param_value >= 0)
+          } else {
+            complete_list[[param]] <- (is.null(param_value) || (is.numeric(param_value) && param_value >= 0))
+          }
         } else if (param %in% c("local_threshold", "occupancy_threshold", "dispersal_target_k_threshold")) {
           complete_list[[param]] <- (is.null(param_value) || (is.numeric(param_value) && param_value >= 0))
         # Dispersal and correlation attributes:
         } else if (param %in% c("dispersal_data")) {
-          complete_list[[param]] <- (is.null(param_value) || (is.numeric(as.matrix(param_value)) && all(param_value >= 0) && self$is_consistent(param)))
+          complete_list[[param]] <- (is.null(self$dispersal_data) || (is.list(param_value) && is.numeric(as.matrix(param_value[[1]])) && self$is_consistent(param)))
         } else if (param %in% c("compact_decomposition")) {
           complete_list[[param]] <- (is.null(param_value) || (is.list(param_value) && "matrix" %in% names(param_value) && "map" %in% names(param_value) &&
                                        is.numeric(param_value$matrix) && all(param_value$matrix >= 0) && self$is_consistent(param)))
@@ -209,28 +218,28 @@ PaleoPopModel <- R6Class("PaleoPopModel",
 
     ## Attributes ##
 
-    # .attribute_aliases [inherited]
+    # .attribute_aliases   [inherited]
 
     # Model attributes #
     .model_attributes = c("duration", "years_per_step", "random_seed", "transition_rate", "standard_deviation",
-                          "populations", "coordinates", "initial_abundances", "growth_rate_max", "local_threshold",
-                          "occupancy_threshold", "dispersal_target_k_threshold", "carrying_capacities",
-                          "dispersal_data", "compact_decomposition", "harvest", "harvest_max", "harvest_g",
-                          "harvest_z", "harvest_max_n", "human_densities", "results_selection"),
-    # .duration                      [inherited]
+                          "populations", "coordinates", "initial_abundances", "density_dependence", "growth_rate_max",
+                          "local_threshold", "occupancy_threshold", "dispersal_target_k_threshold", "carrying_capacities",
+                          "dispersal_data", "compact_decomposition", "harvest", "harvest_max", "harvest_g", "harvest_z",
+                          "harvest_max_n", "human_densities", "results_selection"),
+    # .duration            [inherited]
     .years_per_step = NULL,
     .random_seed = NULL,
     .transition_rate = NULL,
     .standard_deviation = NULL,
-    # Population settings:
-    # .populations                   [inherited]
-    # .coordinates                   [inherited]
-    # .initial_abundances            [inherited]
+    # .populations         [inherited]
+    # .coordinates         [inherited]
+    # .initial_abundances  [inherited]
+    .density_dependence = NULL,
     .growth_rate_max = NULL,
     .local_threshold = NULL,
     .occupancy_threshold = NULL,
     .dispersal_target_k_threshold = NULL,
-    # .carrying_capacities           [inherited]
+    # .carrying_capacities [inherited]
     .dispersal_data = NULL,
     .compact_decomposition = NULL,
     .harvest = NULL,
@@ -238,22 +247,26 @@ PaleoPopModel <- R6Class("PaleoPopModel",
     .harvest_g = NULL,
     .harvest_z = NULL,
     .harvest_max_n = NULL,
-    # .human_densities               [inherited]
+    # .human_densities     [inherited]
     .results_selection = NULL,
 
     # Attributes accessible via model get/set methods #
     .active_attributes = c("duration", "years_per_step", "random_seed", "transition_rate", "standard_deviation",
-                           "populations", "coordinates", "initial_abundances", "growth_rate_max", "local_threshold",
-                           "occupancy_threshold", "dispersal_target_k_threshold", "carrying_capacities",
-                           "dispersal_data", "compact_decomposition", "harvest", "harvest_max", "harvest_g",
-                           "harvest_z", "harvest_max_n", "human_densities", "results_selection")
+                           "populations", "coordinates", "initial_abundances", "density_dependence", "growth_rate_max",
+                           "local_threshold", "occupancy_threshold", "dispersal_target_k_threshold", "carrying_capacities",
+                           "dispersal_data", "compact_decomposition", "harvest", "harvest_max", "harvest_g", "harvest_z",
+                           "harvest_max_n", "human_densities", "results_selection")
 
     # Template model for fixed (non-sampled) attributes for shallow cloning
-    # .template_model                [inherited]
+    # .template_model      [inherited]
 
     # Vector of sample attributes (names)
-    # .sample_attributes             [inherited]
+    # .sample_attributes   [inherited]
 
+    # Errors and warnings #
+    # .error_messages      [inherited]
+    # .warning_messages    [inherited]
+    
   ), # end private
 
   # Active binding accessors for private model attributes (above) #
@@ -337,7 +350,27 @@ PaleoPopModel <- R6Class("PaleoPopModel",
 
     # initial_abundances [inherited]
 
-    #' @field growth_rate_max Maximum growth rate.
+    #' @field density_dependence Density dependence type ("contest", "scramble", or "ceiling").
+    density_dependence = function(value) {
+      if (!(missing(value) || is.null(value) || (is.character(value) && (value %in% c("contest", "scramble", "ceiling"))))) {
+        stop("Density dependence must be contest, scramble, or ceiling", call. = FALSE)
+      }
+      if (is.null(self$template_model) || "density_dependence" %in% self$sample_attributes) {
+        if (missing(value)) {
+          private$.density_dependence
+        } else {
+          private$.density_dependence <- value
+        }
+      } else {
+        if (missing(value)) {
+          self$template_model$density_dependence
+        } else {
+          self$template_model$density_dependence <- value
+        }
+      }
+    },
+    
+    #' @field growth_rate_max Maximum growth rate (for "contest" or "scramble" density dependence).
     growth_rate_max = function(value) {
       if (is.null(self$template_model) || "growth_rate_max" %in% self$sample_attributes) {
         if (missing(value)) {
@@ -353,7 +386,7 @@ PaleoPopModel <- R6Class("PaleoPopModel",
         }
       }
     },
-
+    
     #' @field local_threshold Abundance threshold (that needs to be exceeded) for each population to persist.
     local_threshold = function(value) {
       if (is.null(self$template_model) || "local_threshold" %in% self$sample_attributes) {
@@ -554,6 +587,10 @@ PaleoPopModel <- R6Class("PaleoPopModel",
     }
 
     # sample_attributes [inherited]
+
+    # error_messages    [inherited]
+    
+    # warning_messages  [inherited]
 
   ) # end active
 )

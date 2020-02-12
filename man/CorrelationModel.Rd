@@ -9,7 +9,8 @@ population model. The model calculates correlations between population model
 cells using a distance-based function: \emph{a*exp(-distance/b)}, where
 \emph{a} (amplitude) and \emph{b} (breadth) are configurable model
 attributes. The model also calculates a Cholesky decomposition of the
-correlation matrix, which is utilized to generate correlated normal deviates.
+correlation matrix, which is utilized to generate (optionally temporal)
+correlated normal deviates.
 }
 \section{Super classes}{
 \code{\link[paleopop:GenericClass]{paleopop::GenericClass}} -> \code{\link[paleopop:GenericModel]{paleopop::GenericModel}} -> \code{CorrelationModel}
@@ -196,20 +197,28 @@ List containing a compact Cholesky decomposition matrix and a corresponding map 
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-generate_correlated_normal_deviates"></a>}}
 \subsection{Method \code{generate_correlated_normal_deviates()}}{
-Generates and returns correlated normal deviates from the correlation model, utilizing the optional random seed.
+Generates correlated normal deviates from the correlation model, utilizing the optional random seed and optional temporal correlation across time steps.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CorrelationModel$generate_correlated_normal_deviates(random_seed = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{CorrelationModel$generate_correlated_normal_deviates(
+  random_seed = NULL,
+  temporal_correlation = 1,
+  time_steps = 1
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{random_seed}}{Optional seed for the random generation of correlated deviates.}
+
+\item{\code{temporal_correlation}}{Optional temporal correlation coefficient (0-1; default = 1).}
+
+\item{\code{time_steps}}{Optional number of time steps for temporal correlation (default = 1 or none).}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Array/vector of correlated normal deviates.
+Array (non-temporal) or matrix (temporal) of correlated normal deviates.
 }
 }
 \if{html}{\out{<hr>}}

@@ -6,7 +6,8 @@
 #' cells using a distance-based function: \emph{a*exp(-distance/b)}, where
 #' \emph{a} (amplitude) and \emph{b} (breadth) are configurable model
 #' attributes. The model also calculates a Cholesky decomposition of the
-#' correlation matrix, which is utilized to generate correlated normal deviates.
+#' correlation matrix, which is utilized to generate (optionally temporal)
+#' correlated normal deviates.
 #'
 #' @importFrom R6 R6Class
 #' @include GenericModel.R
@@ -211,28 +212,57 @@ CorrelationModel <- R6Class("CorrelationModel",
     },
 
     #' @description
-    #' Generates and returns correlated normal deviates from the correlation model, utilizing the optional random seed.
+    #' Generates correlated normal deviates from the correlation model, utilizing the optional random seed and optional temporal correlation across time steps.
     #' @param random_seed Optional seed for the random generation of correlated deviates.
-    #' @return Array/vector of correlated normal deviates.
-    generate_correlated_normal_deviates = function(random_seed = NULL) {
-
+    #' @param temporal_correlation Optional temporal correlation coefficient (0-1; default = 1).
+    #' @param time_steps Optional number of time steps for temporal correlation (default = 1 or none).
+    #' @return Array (non-temporal) or matrix (temporal) of correlated normal deviates.
+    generate_correlated_normal_deviates = function(random_seed = NULL, temporal_correlation = 1, time_steps = 1) {
+      
       # Ensure compact correlation decomposition is calculated
       if (is.null(self$t_decomposition_compact_matrix) || is.null(self$t_decomposition_compact_map)) {
-        stop("The compact correlation decomposition needs to be calculated before correlated normal deviates can be generated", call. = FALSE)
+        return("The compact correlation decomposition needs to be calculated before correlated normal deviates can be generated")
       }
-
+      
       # Resolve dimensions
       populations <- nrow(self$coordinates)
       compact_rows <- nrow(self$t_decomposition_compact_matrix)
-
+      
       # Set random seed when present
       if (!is.null(random_seed)) {
         set.seed(random_seed)
       }
-
-      # Generate spatially correlated deviates
-      return(.colSums(self$t_decomposition_compact_matrix*rnorm(populations)[self$t_decomposition_compact_map],
-                      m = compact_rows, n = populations, na.rm=TRUE))
+      
+      # Generate temporal deviates
+      if (time_steps > 1) {
+        if (temporal_correlation < 1) {
+          deviates <- array(rnorm(populations*time_steps), c(populations, time_steps))
+          # Calculate a Cholesky decomposition for temporal correlation between sequential time-steps
+          if (temporal_correlation > 0) {
+            time_step_correlation <- array(temporal_correlation, c(2, 2))
+            diag(time_step_correlation) <- 1
+            time_step_decomposition <- chol(time_step_correlation)[,2]
+            for (i in 2:time_steps) {
+              deviates[,i] <- time_step_decomposition[1]*deviates[,i-1] + time_step_decomposition[2]*deviates[,i]
+            }
+          }
+        } else { # temporal correlation = 1 : duplicate deviates across time
+          deviates <- array(rnorm(populations), c(populations, time_steps))
+        }
+        
+        # Apply spatial correlation to the temporal deviates
+        for (i in 1:time_steps) {
+          deviates[,i] <- .colSums(self$t_decomposition_compact_matrix*deviates[self$t_decomposition_compact_map, i],
+                                   m = compact_rows, n = populations, na.rm=TRUE)
+        }
+        
+        return(deviates)
+        
+      } else { # Generate spatially correlated only
+        
+        return(.colSums(self$t_decomposition_compact_matrix*rnorm(populations)[self$t_decomposition_compact_map],
+                        m = compact_rows, n = populations, na.rm=TRUE))
+      }
     }
 
   ), # end public
@@ -384,5 +414,9 @@ CorrelationModel <- R6Class("CorrelationModel",
       }
     }
 
+    # error_messages    [inherited]
+    
+    # warning_messages  [inherited]
+    
   ) # end active
 )

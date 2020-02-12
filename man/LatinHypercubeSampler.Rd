@@ -22,6 +22,8 @@ An R6 Class to represent a Latin Hypercube Sampler.
 
 \item{\code{parameter_distributions}}{A list of sample distribution values (nested list with appropriate parameters).}
 
+\item{\code{random_seed}}{A numeric random seed for repeatable sample generation.}
+
 \item{\code{sample_data}}{A data frame of generated sample values.}
 }
 \if{html}{\out{</div>}}
@@ -190,13 +192,15 @@ Sets a parameter to be sampled from a triangular distribution with lower and upp
 \subsection{Method \code{generate_samples()}}{
 Generates latin hypercube sample data for the parameters using corresponding distributions.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LatinHypercubeSampler$generate_samples(number = 10)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{LatinHypercubeSampler$generate_samples(number = 10, random_seed = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{number}}{Number of samples to generate (default = 10).}
+
+\item{\code{random_seed}}{Optional seed for the random generation of samples.}
 }
 \if{html}{\out{</div>}}
 }

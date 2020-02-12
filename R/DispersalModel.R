@@ -49,12 +49,16 @@ DispersalModel <- R6Class("DispersalModel",
     # Overwritten/overridden methods #
 
     #' @description
-    #' Initialization method sets the generative template and requirements as well as any attributes passed via a \emph{params} list or individually.
+    #' Initialization method sets the generative template and requirements, optionally the barrier/sea-ice model, as well as any attributes passed via a \emph{params} list or individually.
     #' @param generative_template Optional nested object for generative dispersal model attributes that need to be maintained when a new clone object is generated for a sample simulation.
     #' @param generative_requirements Optional list of attribute names and the template setting (\emph{"file"} or \emph{"function"}) that is required to generate their values (otherwise default functionality is used).
+    #' @param barrier_sea_ice_model Optional \emph{BarrierSeaIceModel} (or inherited class) object for dispersal distance multiplier data.
     #' @param attribute_aliases Optional list of extra alias names for model attributes (form: alias = "attribute") to be used with the set and get attributes methods.
     #' @param ... Parameters passed via a \emph{params} list or individually.
-    initialize = function(generative_template = NULL, generative_requirements = NULL, attribute_aliases = NULL, ...) {
+    initialize = function(generative_template = NULL,
+                          generative_requirements = NULL,
+                          barrier_sea_ice_model = NULL,
+                          attribute_aliases = NULL, ...) {
       if (is.null(generative_template)) { # when new object
         self$generative_template <- DispersalTemplate$new()
         attribute_aliases <- c(attribute_aliases, # Append default aliases
@@ -77,6 +81,9 @@ DispersalModel <- R6Class("DispersalModel",
       super$initialize(generative_template = generative_template,
                        generative_requirements = generative_requirements,
                        attribute_aliases = attribute_aliases, ...)
+      if (!is.null(barrier_sea_ice_model)) {
+        self$barrier_sea_ice_model <- barrier_sea_ice_model
+      }
     },
 
     #' @description
@@ -93,7 +100,12 @@ DispersalModel <- R6Class("DispersalModel",
         dispersal_data_default <- ("dispersal_data" %in% names(satisfied) && self$generative_requirements$dispersal_data == "default")
         if (dispersal_data_default) {
           satisfied$dispersal_data <- (!is.null(self$coordinates) && !is.null(self$distance_classes) &&
-                                         !is.null(self$dispersal_function_data) && !is.null(self$distance_data))
+                                         !is.null(self$dispersal_function_data))
+          if (!is.null(self$barrier_sea_ice_model)) {
+            satisfied$dispersal_data <- (satisfied$dispersal_data &&
+                                           !is.null(self$barrier_sea_ice_model$barrier_sea_ice_matrix))
+          }
+          satisfied$dispersal_data <- (satisfied$dispersal_data && !is.null(self$distance_data))
         }
         # Add any attributes that are missing (for error message)
         if (dispersal_matrix_default || dispersal_data_default) {
@@ -105,6 +117,11 @@ DispersalModel <- R6Class("DispersalModel",
           }
           if (is.null(self$dispersal_function_data)) {
             satisfied$dispersal_function_data <- FALSE
+          }
+        }
+        if (dispersal_data_default && !is.null(self$barrier_sea_ice_model)) {
+          if (is.null(self$barrier_sea_ice_model$barrier_sea_ice_matrix)) {
+            satisfied$barrier_sea_ice_matrix <- FALSE
           }
         }
         if (dispersal_matrix_default || dispersal_data_default) {
@@ -174,6 +191,11 @@ DispersalModel <- R6Class("DispersalModel",
       distances_within_range <- distance_matrix[distance_data]
       distance_matrix <- NULL # release from memory
 
+      # Calculate barrier/sea-ice model distance multipliers for the within range indices
+      if (!is.null(self$barrier_sea_ice_model)) {
+        distance_multipliers <- self$barrier_sea_ice_model$calculate_distance_multipliers(distance_data)
+      }
+
       # Calculate and append indices for constructing compact distance matrices
       distance_data <- data.frame(distance_data)
       populations <- nrow(self$coordinates)
@@ -184,10 +206,24 @@ DispersalModel <- R6Class("DispersalModel",
       # Map the row of each compact matrix to the original target population
       distance_data$compact_row <- which(compact_matrix > 0, arr.ind = TRUE, useNames = FALSE)[, 1]
 
-      # Calculate distance classes for distances within the maximum dispersal range
-      distance_classes <- as.numeric(cut(distances_within_range, breaks = c(1, self$distance_classes)))
-      self$distance_data <- data.frame(distance_data, distance_class = distance_classes)
-
+      # Calculate base (no friction) distance classes for distances within the maximum dispersal range
+      base_distance_classes <- as.numeric(cut(distances_within_range, breaks = c(1, self$distance_classes)))
+      self$distance_data <- list(base = data.frame(distance_data, distance_class = base_distance_classes))
+      
+      # Calculate the sequential changes in distance class using barrier/sea-ice model distance multipliers
+      if (!is.null(self$barrier_sea_ice_model)) {
+        current_distance_classes <- base_distance_classes
+        sequential_distance_data <- list()
+        for (i in 1:length(distance_multipliers)) {
+          previous_distance_classes <- current_distance_classes
+          current_distance_classes <- as.numeric(cut(distances_within_range*distance_multipliers[[i]], breaks = c(1, self$distance_classes, Inf)))
+          changed_indices <- which(current_distance_classes != previous_distance_classes)
+          sequential_distance_data[[i]] <- data.frame(distance_data[changed_indices,], distance_class = current_distance_classes[changed_indices])
+        }
+        distance_multipliers <- NULL # release from memory
+        self$distance_data$changes <- sequential_distance_data
+      }
+      
     },
 
     #' @description
@@ -197,59 +233,111 @@ DispersalModel <- R6Class("DispersalModel",
     calculate_dispersals = function(type = "data") {
 
       # Ensure distance data are calculated
-      if (is.null(self$distance_data)) {
-        return("Dispersal distance data needs to be calculated before dispersals can be generated")
+      if (is.null(self$distance_data) || is.null(self$distance_data$base) ||
+          (!is.null(self$barrier_sea_ice_model) && is.null(self$distance_data$changes))) {
+        return("Dispersal distance data needs to be (re-)calculated before dispersals can be generated")
       }
-
+      
       # Calculate dispersals using distance data and sampled dispersal function parameters
       if (!is.null(self$dispersal_proportion) && !is.null(self$dispersal_breadth) && !is.null(self$dispersal_max_distance)) {
 
         # Calculate dispersal rates for each distance class (discrete values)
         dispersal_rate_classes <- c(ifelse(self$distance_classes <= self$dispersal_max_distance, self$dispersal_proportion*exp(-1*self$distance_classes/self$dispersal_breadth), 0), 0)
 
-        # Select distance data for non-zero dispersal classes
-        nonzero_data <- self$distance_data[which(self$distance_data$distance_class <= length(which(dispersal_rate_classes > 0))),]
-
-        # Calculate a compact matrix of dispersals from the distance data (original compact indices)
-        base_compact_rows <- max(self$distance_data$compact_row)
+        # Select base (non-friction) data for non-zero dispersal classes
+        nonzero_base_data <- self$distance_data$base[which(self$distance_data$base$distance_class <= length(which(dispersal_rate_classes > 0))), ]
+        
+        # Calculate a compact matrix of dispersals for the base (non-friction) data (original compact indices)
+        base_compact_rows <- max(self$distance_data$base$compact_row)
         populations <- nrow(self$coordinates)
         compact_matrix <- array(0, c(base_compact_rows, populations))
-        compact_dispersal_indices <- as.matrix(nonzero_data[, c("compact_row", "source_pop")])
-        compact_matrix[compact_dispersal_indices] <- dispersal_rate_classes[nonzero_data$distance_class]
+        compact_dispersal_indices <- as.matrix(nonzero_base_data[, c("compact_row", "source_pop")])
+        compact_matrix[compact_dispersal_indices] <- dispersal_rate_classes[nonzero_base_data$distance_class]
 
-        # Calculate multipliers to set the total proportion migrating from each cell to p
+        # Calculate multipliers to set the total proportion migrating from each cell (without friction) to p
         multipliers <- self$dispersal_proportion/.colSums(compact_matrix, m = base_compact_rows, n = populations)
         multipliers[which(!is.finite(multipliers))] <- 1
-
+        if (type == "data" && !is.null(self$barrier_sea_ice_model)) {
+          multipliers[which(multipliers > 1)] <- 1 #DISCUSS# always
+        }
+        
         # Apply multipliers to the base compact dispersal matrix
         compact_matrix <- compact_matrix*matrix(multipliers, nrow = base_compact_rows, ncol = populations, byrow = TRUE)
 
-        # Extract dispersal rates and round when required (then update non-zero dispersal data)
-        nonzero_data$dispersal_rate <- compact_matrix[compact_dispersal_indices]
+        # Extract dispersal rates and round when required (then update non-zero base/non-friction dispersal data)
+        nonzero_base_data$dispersal_rate <- compact_matrix[compact_dispersal_indices]
         if (!is.null(self$decimals)) {
-          nonzero_data$dispersal_rate <- round(nonzero_data$dispersal_rate, self$decimals)
-          nonzero_data <- nonzero_data[which(nonzero_data$dispersal_rate > 0),]
+          nonzero_base_data$dispersal_rate <- round(nonzero_base_data$dispersal_rate, self$decimals)
+          nonzero_base_data <- nonzero_base_data[which(nonzero_base_data$dispersal_rate > 0),]
+          compact_dispersal_indices <- as.matrix(nonzero_base_data[, c("compact_row", "source_pop")])
         }
 
         # Calculate indices for constructing further compacted dispersal matrices for emigrants and immigrants
-        dispersal_rows <- tabulate(nonzero_data$source_pop, nbins = populations)
-        dispersal_cols <- tabulate(nonzero_data$target_pop, nbins = populations)
+        dispersal_rows <- tabulate(nonzero_base_data$source_pop, nbins = populations)
+        dispersal_cols <- tabulate(nonzero_base_data$target_pop, nbins = populations)
         nonzero_compact_rows <- max(dispersal_rows, dispersal_cols)
         compact_emigrant_matrix <- array(1:nonzero_compact_rows, c(nonzero_compact_rows, populations))
         compact_immigrant_matrix <- compact_emigrant_matrix*(compact_emigrant_matrix <= matrix(dispersal_cols, nrow = nonzero_compact_rows, ncol = populations, byrow = TRUE))
         compact_emigrant_matrix <- compact_emigrant_matrix*(compact_emigrant_matrix <= matrix(dispersal_rows, nrow = nonzero_compact_rows, ncol = populations, byrow = TRUE))
         # Map the row of each compact matrix to the original target (for emigrants) or source (for immigrants) populations
-        nonzero_data$emigrant_row <- which(compact_emigrant_matrix > 0, arr.ind = TRUE, useNames = FALSE)[,1]
-        nonzero_data$immigrant_row <- which(compact_immigrant_matrix > 0, arr.ind = TRUE, useNames = FALSE)[,1]
-        target_sorted_indices <- nonzero_data[order(nonzero_data$target_pop, nonzero_data$source_pop), c("target_pop", "source_pop")]
-        nonzero_data$immigrant_row <- nonzero_data$immigrant_row[order(target_sorted_indices$source_pop, target_sorted_indices$target_pop)]
+        nonzero_base_data$emigrant_row <- which(compact_emigrant_matrix > 0, arr.ind = TRUE, useNames = FALSE)[,1]
+        nonzero_base_data$immigrant_row <- which(compact_immigrant_matrix > 0, arr.ind = TRUE, useNames = FALSE)[,1]
+        target_sorted_indices <- nonzero_base_data[order(nonzero_base_data$target_pop, nonzero_base_data$source_pop), c("target_pop", "source_pop")]
+        nonzero_base_data$immigrant_row <- nonzero_base_data$immigrant_row[order(target_sorted_indices$source_pop, target_sorted_indices$target_pop)]
 
-        # Set dispersals from non-zero dispersal data
-        if (type == "matrix") {
-          self$dispersal_matrix <- array(0, c(populations, populations))
-          self$dispersal_matrix[as.matrix(nonzero_data[, c("target_pop", "source_pop")])] <- nonzero_data$dispersal_rate
-        } else {
-          self$dispersal_data <- nonzero_data[, c("target_pop", "source_pop", "emigrant_row", "immigrant_row", "dispersal_rate")]
+        # Calculate the sequential changes in dispersals when barrier/sea-ice model is present
+        if (type == "data" && !is.null(self$barrier_sea_ice_model)) {
+          
+          # Calculate the initial dispersal data by applying the first (friction) distance changes to the (compact) base data
+          compact_matrix[as.matrix(self$distance_data$changes[[1]][, c("compact_row", "source_pop")])] <-
+            dispersal_rate_classes[self$distance_data$changes[[1]]$distance_class]*multipliers[self$distance_data$changes[[1]]$source_pop]
+          
+          # Construct the dispersal data from the base (non-friction) data for the non-zero base indices (ensures all indices present for changes)
+          self$dispersal_data <- list(data.frame(nonzero_base_data[, c("target_pop", "source_pop", "emigrant_row", "immigrant_row")],
+                                                 dispersal_rate = compact_matrix[compact_dispersal_indices]))
+          compact_matrix <- NULL  # release from memory
+          
+          # Round when required
+          if (!is.null(self$decimals)) {
+            self$dispersal_data[[1]]$dispersal_rate <- round(self$dispersal_data[[1]]$dispersal_rate, self$decimals)
+          }
+          
+          # Map the original distance classes and the new emigrant and immigrant row indices via compact matrices
+          original_distance_class_map <- emigrant_row_map <- immigrant_row_map <- array(NA, c(base_compact_rows, populations))
+          original_distance_class_map[as.matrix(self$distance_data$base[, c("compact_row", "source_pop")])] <- self$distance_data$base$distance_class
+          emigrant_row_map[as.matrix(nonzero_base_data[, c("compact_row", "source_pop")])] <- nonzero_base_data$emigrant_row
+          immigrant_row_map[as.matrix(nonzero_base_data[, c("compact_row", "source_pop")])] <- nonzero_base_data$immigrant_row
+          
+          # Calculate subsequent changes in dispersals
+          for (i in 2:length(self$distance_data$changes)) {
+            
+            # Select data for non-zero dispersal classes
+            original_distance_classes <- original_distance_class_map[as.matrix(self$distance_data$changes[[i]][, c("compact_row", "source_pop")])]
+            nonzero_dispersal_indices <- which(original_distance_classes <= length(which(dispersal_rate_classes > 0)))
+            nonzero_change_data <- self$distance_data$changes[[i]][nonzero_dispersal_indices,]
+            
+            # Calculate/construct dispersal rates using class and multiplier (based on non-friction data)
+            self$dispersal_data[[i]] <- data.frame(nonzero_change_data[, c("target_pop", "source_pop")],
+                                                   emigrant_row = emigrant_row_map[as.matrix(nonzero_change_data[, c("compact_row", "source_pop")])],
+                                                   immigrant_row = immigrant_row_map[as.matrix(nonzero_change_data[, c("compact_row", "source_pop")])],
+                                                   dispersal_rate = dispersal_rate_classes[nonzero_change_data$distance_class]*multipliers[nonzero_change_data$source_pop])
+            # Round when required
+            if (!is.null(self$decimals) && length(self$dispersal_data[[i]]) > 0) {
+              self$dispersal_data[[i]]$dispersal_rate <- round(self$dispersal_data[[i]]$dispersal_rate, self$decimals)
+            }
+            
+          }
+          
+        } else { # matrix or no barrier/sea-ice model
+          
+          # Set dispersals from non-zero dispersal data
+          if (type == "matrix") {
+            self$dispersal_matrix <- array(0, c(populations, populations))
+            self$dispersal_matrix[as.matrix(nonzero_base_data[, c("target_pop", "source_pop")])] <- nonzero_base_data$dispersal_rate
+          } else {
+            self$dispersal_data <- list(nonzero_base_data[, c("target_pop", "source_pop", "emigrant_row", "immigrant_row", "dispersal_rate")])
+          }
+          
         }
 
       } else {
@@ -268,7 +356,8 @@ DispersalModel <- R6Class("DispersalModel",
     # Generative attributes #
     # .generative_template     [inherited]
     # .generative_requirements [inherited]
-
+    .barrier_sea_ice_model = NULL,
+    
     # Model attributes #
     .model_attributes = c("coordinates", "distance_classes", "distance_data", "dispersal_function_data",
                           "decimals", "proportion_multiplier", "dispersal_proportion", "dispersal_breadth",
@@ -303,6 +392,47 @@ DispersalModel <- R6Class("DispersalModel",
 
     # generative_requirements [inherited]
 
+    #' @field barrier_sea_ice_model A \emph{BarrierSeaIceModel} (or inherited class) object for dispersal distance multiplier data.
+    barrier_sea_ice_model = function(value) {
+      if (missing(value)) {
+        self$generative_template$barrier_sea_ice_model
+      } else {
+        if (!is.null(value) && !("BarrierSeaIceModel" %in% class(value))) {
+          stop("Dispersal barrier/sea-ice model must be a BarrierSeaIceModel or inherited class object", call. = FALSE)
+        } else if (!is.null(value)) {
+          # Protect consistency of existing distance data associated with an existing barrier/sea-ice model
+          if (!is.null(self$distance_data) && !is.null(self$barrier_sea_ice_model)) {
+            stop("Dispersal model distance data is already associated with the existing barrier/sea-ice model", call. = FALSE)
+          # Check coordinates consistency
+          } else if (!is.null(value$coordinates) && !is.null(self$generative_template$coordinates) &&
+                     (nrow(value$coordinates) != nrow(self$generative_template$coordinates) ||
+                      !all(value$coordinates == self$generative_template$coordinates))) {
+            stop("Dispersal model coordinates are inconsistent with the barrier/sea-ice model", call. = FALSE)
+          } else if (is.null(value$coordinates) && !is.null(self$generative_template$coordinates) &&
+                     !is.null(value$barrier_sea_ice_matrix) &&
+                     nrow(value$barrier_sea_ice_matrix) != nrow(self$generative_template$coordinates)) {
+            stop("Dispersal model coordinates are inconsistent with the barrier/sea-ice matrix dimensions", call. = FALSE)
+          } else if (!is.null(self$distance_data)) {
+            # Existing distance data will lack temporal changes
+            warning("Dispersal model distance data will need to be re-calculated with the barrier/sea-ice model", call. = FALSE)
+            self$distance_data <- NULL
+          }
+          # Copy coordinates appropriately
+          if (is.null(value$coordinates) && !is.null(self$generative_template$coordinates)) {
+            value$coordinates <- self$generative_template$coordinates
+          } else if (!is.null(value$coordinates) && is.null(self$generative_template$coordinates)) {
+            self$generative_template$coordinates <- value$coordinates
+          }
+          self$generative_template$barrier_sea_ice_model <- value
+        } else { # set model (to NULL)
+          self$generative_template$barrier_sea_ice_model <- value
+          if (!is.null(self$distance_data) && "changes" %in% names(self$distance_data)) {
+            self$distance_data$changes <- NULL
+          }
+        }
+      }
+    },
+    
     # Model attribute accessors #
 
     # Nested model attribute accessors #
@@ -526,5 +656,11 @@ DispersalModel <- R6Class("DispersalModel",
       }
     }
 
+    # Errors and warnings #
+    
+    # error_messages    [inherited]
+    
+    # warning_messages  [inherited]
+    
   ) # end active
 )

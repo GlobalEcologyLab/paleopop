@@ -21,14 +21,33 @@ GenericClass <- R6Class("GenericClass",
 
     ## Attributes ##
 
-    ## Methods ##
+    #' @field object_generator Class object generator used to create new clones, particularly for user inheritance.
+    object_generator = NULL,
 
+    ## Methods ##
+    
+    # Overwritten/overridden methods #
+
+    #' @description
+    #' Initialization method saves an object generator for new cloning.
+    #' @param object_generator Class object generator used to create new clones, particularly for user inheritance.
+    #' @param ... Parameters passed individually (ignored).
+    initialize = function(object_generator = NULL, ...) {
+      if (!is.null(object_generator)) {
+        self$object_generator <- object_generator
+      } else {
+        self$object_generator <- eval(parse(text = class(self)[1]))
+      }
+    },
+    
+    # New methods #
+    
     #' @description
     #' Creates a new (re-initialized) object of the current (inherited) object class with optionally passed parameters.
     #' @param ... Parameters passed via the inherited class constructor (defined in initialize and run via new).
     #' @return New object of the inherited class.
     new_clone = function(...) {
-      return(eval(parse(text = sprintf("%s$new(...)", class(self)[1]))))
+      return(self$object_generator$new(object_generator = self$object_generator, ...))
     },
 
     #' @description
@@ -86,7 +105,7 @@ GenericClass <- R6Class("GenericClass",
   private = list(
 
     ## Attributes ##
-
+    
   ) # end private
 
 )

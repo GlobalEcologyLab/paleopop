@@ -2,8 +2,8 @@
 #'
 #' @description
 #' An R6 class to represent a generic (abstract) model for encapsulating and dynamically
-#' generating simulation results simulation results, as well as optional re-generated 
-#' niche carrying capacities and/or human densities.
+#' generating simulation results, as well as optional re-generated niche carrying 
+#' capacities and/or human densities.
 #'
 #' @importFrom R6 R6Class
 #' @include GenericModel.R
@@ -36,11 +36,6 @@ GenericResultsModel <- R6Class("GenericResultsModel",
     #' @param parent Parent simulation results model for individual populations (used when nesting a results model clone for all populations).
     #' @param ... Parameters passed via a \emph{params} list or individually.
     initialize = function(results = NULL, parent = NULL, ...) {
-      if (!is.null(parent)) {
-        self$parent <- parent
-      } else {
-        self$all <- self$new_clone(parent = self)
-      }
       if (!is.null(results)) {
         if ((is.character(results) && file.exists(results) &&
              length(grep(".RDS", toupper(results), fixed = TRUE)))) {
@@ -48,17 +43,20 @@ GenericResultsModel <- R6Class("GenericResultsModel",
         } else  if (is.character(results)) {
           stop(paste("Could not read results from", results), call. = FALSE)
         }
-        if (is.list(results)) {
-          if ("all" %in% names(results)) {
-            self$all$set_attributes(params = results$all)
-            results$all <- NULL
-          }
-          super$initialize(params = results, ...)
-        } else {
+        if (!is.list(results)) {
           stop(paste("Could not read results from type/class", class(results)[1]), call. = FALSE)
         }
+      }
+      super$initialize(...)
+      if (!is.null(parent)) {
+        self$parent <- parent
       } else {
-        super$initialize(...)
+        self$all <- self$new_clone(parent = self)
+        if (is.list(results)) {
+          self$all$set_attributes(params = results$all)
+          results$all <- NULL
+          self$set_attributes(params = results)
+        }
       }
     },
 
@@ -67,8 +65,12 @@ GenericResultsModel <- R6Class("GenericResultsModel",
     #' @param ... Parameters passed via the inherited class constructor (defined in initialize and run via new).
     #' @return New object of the inherited class.
     new_clone = function(...) {
-      super$new_clone(occupancy_mask = private$.occupancy_mask,
-                      burn_in_duration = private$.burn_in_duration, ...)
+      if ("parent" %in% names(list(...))) {
+        super$new_clone(...)
+      } else {
+        super$new_clone(occupancy_mask = private$.occupancy_mask,
+                        burn_in_duration = private$.burn_in_duration, ...)
+      }
     },
 
     #' @description
