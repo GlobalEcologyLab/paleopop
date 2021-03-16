@@ -1,63 +1,24 @@
 Package: paleopop
 Type: Package
 Title: Pattern-oriented Modelling Framework for Coupled Niche-population Paleo-climatic Models
-Version: 1.1.0
-Author: Global Ecology Lab
+Version: 2.0.0
+Author: Global ChEC Lab
 Maintainer: Sean Haythorne <sean.haythorne@adelaide.edu.au>
-Description: This pattern-oriented modelling (POM) framework provides a collection of 
-    interoperable R6 classes for simulating multiple spatially-explicit demographic-based
-    population models that utilize paleo-climatic niche model data, and for selecting the
-    simulation models that best fit observed data via an Approximate Bayesian Analysis
-    (ABC) validation method.
-    Included are classes for building population models and associated generative models
-    for representing niche carrying capacities (derived from paleo-climatic niche models),
-    spatial dispersal, and human density (for impact/harvesting functionality). A Latin
-    hypercube sampling class is provided to generate sampled parameters for multiple model
-    simulations. A multi-simulation manager class is provided to run and log simulations,
-    and to collect simulation results. A simulator class is provided to wrap a simulation
-    function, the default being the paleopop simulation function, which is optimized for
-    single-generation transitions and large populations. Finally, classes for collating
-    results into summary metrics and for running ABC validation and model selection are 
-    provided. The framework utilizes a hierarchy of class inheritance, with additional 
-    abstract classes being defined with reusable attributes and methods.
+Description: This extension of the poems pattern-oriented modelling (POM) framework 
+    provides a collection of modules and functions customized for paleontological 
+    time-scales, and optimized for single-generation transitions and large populations, 
+    across multiple generations.
+Depends: R (>= 3.6.0)
 License: GPL (>= 3)
 Encoding: UTF-8
-LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1
 Imports:
-    abc (>= 2.1),
-    doParallel (>= 1.0.14),
-    foreach (>= 1.4.4),
-    gdistance (>= 1.2.2),
-    geosphere (>= 1.5.7),
-    lhs (>= 1.0),
-    metRology (>= 0.9.28.1),
-    R6 (>= 2.4.0),
-    raster (>= 2.8.19),
-    sf (>= 0.7.7),
+    poems (>= 0.5.0),
+    R6 (>= 2.5.0),
     trend (>= 1.1.1)
-Collate: 
-    'GenericClass.R'
-    'GenericModel.R'
-    'AbcValidationModel.R'
-    'BarrierSeaIceModel.R'
-    'CorrelationModel.R'
-    'GenerativeTemplate.R'
-    'DispersalTemplate.R'
-    'GenerativeModel.R'
-    'DispersalModel.R'
-    'HumanDensityTemplate.R'
-    'HumanDensityModel.R'
-    'NicheCarryingCapacityTemplate.R'
-    'NicheCarryingCapacityModel.R'
-    'GenericResultsManager.R'
-    'GenericResultsModel.R'
-    'LatinHypercubeSampler.R'
-    'PopulationModel.R'
-    'PopulationSimulator.R'
-    'MultiSimulationManager.R'
-    'PaleoPopModel.R'
-    'PaleoPopResultsModel.R'
-    'ResultsSummaryManager.R'
-    'paleopop_simulator.R'
-    'region_subset.R'
+Collate:
+    PaleoPopModel.R
+    PaleoPopResults.R
+    PaleoRegion.R
+    paleopop_simulator.R
+    region_subset.R

@@ -2,45 +2,62 @@
 % Please edit documentation in R/PaleoPopModel.R
 \name{PaleoPopModel}
 \alias{PaleoPopModel}
-\title{R6 Class Representing a Population Model for the Default Paleopop Simulator}
+\title{R6 class representing a population model for the paleopop simulator}
 \description{
-R6 class representing a spatially-explicit demographic-based population model with
-attributes utilized by the default paleopop simulator function.
+\code{\link[R6:R6Class]{R6}} class representing a spatially-explicit
+demographic-based population model. It extends the \code{\link{SimulationModel}}
+class with parameters for the \code{\link{paleopop_simulator}}. It inherits
+functionality for creating a nested model, whereby a nested template model with
+fixed parameters is maintained when a model is cloned for various sampled parameters.
+Also provided are extensions to the methods for checking the consistency and
+completeness of model parameters.
 }
 \section{Super classes}{
-\code{\link[paleopop:GenericClass]{paleopop::GenericClass}} -> \code{\link[paleopop:GenericModel]{paleopop::GenericModel}} -> \code{\link[paleopop:PopulationModel]{paleopop::PopulationModel}} -> \code{PaleoPopModel}
+\code{\link[poems:GenericClass]{poems::GenericClass}} -> \code{\link[poems:GenericModel]{poems::GenericModel}} -> \code{\link[poems:SpatialModel]{poems::SpatialModel}} -> \code{\link[poems:SimulationModel]{poems::SimulationModel}} -> \code{PaleoPopModel}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{model_attributes}}{A vector of public model attribute names - another stored as private.}
+\item{\code{attached}}{A list of dynamically attached attributes (name-value pairs).}
 }
 \if{html}{\out{</div>}}
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{years_per_step}}{Number of years per time step.}
+\item{\code{simulation_function}}{Name (character string) or source path of the default simulation function, which takes a model as an input and returns the simulation results.}
+
+\item{\code{model_attributes}}{A vector of model attribute names.}
+
+\item{\code{region}}{A \code{\link{Region}} (or inherited class) object specifying the study region.}
+
+\item{\code{coordinates}}{Data frame (or matrix) of X-Y population coordinates (WGS84) in longitude (degrees West) and latitude (degrees North).}
 
 \item{\code{random_seed}}{Number to seed the random number generation for stochasticity.}
 
-\item{\code{transition_rate}}{Rate of transition (or fecundity) between generations.}
+\item{\code{time_steps}}{Number of simulation time steps.}
 
-\item{\code{standard_deviation}}{Standard deviation applied to transition rates.}
+\item{\code{years_per_step}}{Number of years per time step.}
 
-\item{\code{density_dependence}}{Density dependence type ("contest", "scramble", or "ceiling").}
+\item{\code{populations}}{Number of population cells.}
 
-\item{\code{growth_rate_max}}{Maximum growth rate (for "contest" or "scramble" density dependence).}
+\item{\code{initial_abundance}}{Array (matrix) of initial abundance values at each population cell.}
 
-\item{\code{local_threshold}}{Abundance threshold (that needs to be exceeded) for each population to persist.}
+\item{\code{transition_rate}}{Rate (numeric) of transition between generations at each time-step.}
 
-\item{\code{occupancy_threshold}}{Threshold for the number of populations occupied (that needs to be exceeded) for all populations to persist.}
+\item{\code{standard_deviation}}{Standard deviation (numeric) for applying environmental stochasicity to transition rates.}
 
-\item{\code{dispersal_target_k_threshold}}{Target population carrying capacity threshold for density dependent dispersal.}
+\item{\code{compact_decomposition}}{List containing a compact transposed (Cholesky) decomposition \emph{matrix} (t_decomposition_compact_matrix) and a corresponding \emph{map} of population indices (t_decomposition_compact_map), as per \code{\link{SpatialCorrelation}} class attributes.}
 
-\item{\code{dispersal_data}}{Data frame of non-zero dispersal rates and indices for the construction of compact matrices (columns: target_pop, source_pop, emigrant_row, immigrant_row, dispersal_rate).}
+\item{\code{carrying_capacity}}{Array (or matrix) of carrying capacity values at each population cell (across time).}
 
-\item{\code{compact_decomposition}}{List containing a pre-calculated compact transposed (Cholesky) decomposition matrix and a corresponding map of population indices for environmental correlation (list names: matrix, map).}
+\item{\code{density_dependence}}{Density dependence type ("competition", "logistic", or "ceiling").}
+
+\item{\code{growth_rate_max}}{Maximum growth rate (utilized by density dependence processes).}
+
+\item{\code{dispersal_data}}{List of data frames of non-zero dispersal rates and indices for constructing a compact dispersal matrix, and optional changing rates over time, as per class \code{\link{DispersalGenerator}} \emph{dispersal_data} attribute.}
+
+\item{\code{dispersal_target_k}}{Target population carrying capacity threshold for density dependent dispersal.}
 
 \item{\code{harvest}}{Boolean for utilizing harvesting.}
 
@@ -52,59 +69,61 @@ attributes utilized by the default paleopop simulator function.
 
 \item{\code{harvest_max_n}}{Maximum density per grid cell.}
 
+\item{\code{human_density}}{Matrix of human density (fraction) ($populations rows by $time_steps columns).}
+
+\item{\code{abundance_threshold}}{Abundance threshold (that needs to be exceeded) for each population to persist.}
+
+\item{\code{occupancy_threshold}}{Threshold for the number of populations occupied (that needs to be exceeded) for all populations to persist.}
+
 \item{\code{results_selection}}{List of results selection from ("abundance", "ema", "extirpation", "harvested", "occupancy").}
+
+\item{\code{attribute_aliases}}{A list of alternative alias names for model attributes (form: \code{alias = "attribute"}) to be used with the set and get attributes methods.}
+
+\item{\code{template_model}}{Nested template model for fixed (non-sampled) attributes for shallow cloning.}
+
+\item{\code{sample_attributes}}{Vector of sample attribute names (only).}
+
+\item{\code{required_attributes}}{Vector of required attribute names (only), i.e. those needed to run a simulation.}
+
+\item{\code{error_messages}}{A vector of error messages encountered when setting model attributes.}
+
+\item{\code{warning_messages}}{A vector of warning messages encountered when setting model attributes.}
 }
 \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PaleoPopModel$new()}}
-\item \href{#method-is_consistent}{\code{PaleoPopModel$is_consistent()}}
-\item \href{#method-is_complete}{\code{PaleoPopModel$is_complete()}}
+\item \href{#method-list_consistency}{\code{PaleoPopModel$list_consistency()}}
 \item \href{#method-list_completeness}{\code{PaleoPopModel$list_completeness()}}
-\item \href{#method-incomplete_attributes}{\code{PaleoPopModel$incomplete_attributes()}}
 \item \href{#method-clone}{\code{PaleoPopModel$clone()}}
 }
 }
 \if{html}{
 \out{<details ><summary>Inherited methods</summary>}
 \itemize{
-\item \out{<span class="pkg-link" data-pkg="paleopop" data-topic="GenericClass" data-id="read_from_rds">}\href{../../paleopop/html/GenericClass.html#method-read_from_rds}{\code{paleopop::GenericClass$read_from_rds()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="paleopop" data-topic="GenericClass" data-id="save_to_rds">}\href{../../paleopop/html/GenericClass.html#method-save_to_rds}{\code{paleopop::GenericClass$save_to_rds()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="paleopop" data-topic="GenericModel" data-id="get_attribute_aliases">}\href{../../paleopop/html/GenericModel.html#method-get_attribute_aliases}{\code{paleopop::GenericModel$get_attribute_aliases()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="paleopop" data-topic="GenericModel" data-id="get_attributes">}\href{../../paleopop/html/GenericModel.html#method-get_attributes}{\code{paleopop::GenericModel$get_attributes()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="paleopop" data-topic="GenericModel" data-id="new_clone">}\href{../../paleopop/html/GenericModel.html#method-new_clone}{\code{paleopop::GenericModel$new_clone()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="paleopop" data-topic="GenericModel" data-id="set_attributes">}\href{../../paleopop/html/GenericModel.html#method-set_attributes}{\code{paleopop::GenericModel$set_attributes()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="paleopop" data-topic="PopulationModel" data-id="get_attribute_names">}\href{../../paleopop/html/PopulationModel.html#method-get_attribute_names}{\code{paleopop::PopulationModel$get_attribute_names()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="paleopop" data-topic="PopulationModel" data-id="set_sample_attributes">}\href{../../paleopop/html/PopulationModel.html#method-set_sample_attributes}{\code{paleopop::PopulationModel$set_sample_attributes()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="poems" data-topic="GenericModel" data-id="get_attribute">}\href{../../poems/html/GenericModel.html#method-get_attribute}{\code{poems::GenericModel$get_attribute()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="poems" data-topic="GenericModel" data-id="get_attribute_aliases">}\href{../../poems/html/GenericModel.html#method-get_attribute_aliases}{\code{poems::GenericModel$get_attribute_aliases()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="get_attribute_names">}\href{../../poems/html/SimulationModel.html#method-get_attribute_names}{\code{poems::SimulationModel$get_attribute_names()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="get_attributes">}\href{../../poems/html/SimulationModel.html#method-get_attributes}{\code{poems::SimulationModel$get_attributes()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="incomplete_attributes">}\href{../../poems/html/SimulationModel.html#method-incomplete_attributes}{\code{poems::SimulationModel$incomplete_attributes()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="inconsistent_attributes">}\href{../../poems/html/SimulationModel.html#method-inconsistent_attributes}{\code{poems::SimulationModel$inconsistent_attributes()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="initialize">}\href{../../poems/html/SimulationModel.html#method-initialize}{\code{poems::SimulationModel$initialize()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="is_complete">}\href{../../poems/html/SimulationModel.html#method-is_complete}{\code{poems::SimulationModel$is_complete()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="is_consistent">}\href{../../poems/html/SimulationModel.html#method-is_consistent}{\code{poems::SimulationModel$is_consistent()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="new_clone">}\href{../../poems/html/SimulationModel.html#method-new_clone}{\code{poems::SimulationModel$new_clone()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="set_attributes">}\href{../../poems/html/SimulationModel.html#method-set_attributes}{\code{poems::SimulationModel$set_attributes()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="set_sample_attributes">}\href{../../poems/html/SimulationModel.html#method-set_sample_attributes}{\code{poems::SimulationModel$set_sample_attributes()}}\out{</span>}
 }
 \out{</details>}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\subsection{Method \code{new()}}{
-Initialization method sets template model and sets given attributes individually and/or from a list.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PaleoPopModel$new(template = NULL, ...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{template}}{Template population model containing fixed (non-sampled) attributes.}
-
-\item{\code{...}}{Parameters passed via a \emph{params} list or individually.}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-is_consistent"></a>}}
-\subsection{Method \code{is_consistent()}}{
+\if{html}{\out{<a id="method-list_consistency"></a>}}
+\if{latex}{\out{\hypertarget{method-list_consistency}{}}}
+\subsection{Method \code{list_consistency()}}{
 Returns a boolean to indicate if (optionally selected or all) model attributes (such as dimensions) are consistent.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PaleoPopModel$is_consistent(params = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PaleoPopModel$list_consistency(params = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -115,47 +134,25 @@ Returns a boolean to indicate if (optionally selected or all) model attributes (
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Boolean to indicate consistency of selected/all attributes.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-is_complete"></a>}}
-\subsection{Method \code{is_complete()}}{
-Returns a boolean to indicate if all attributes necessary to simulate the model have been set and are consistent.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PaleoPopModel$is_complete()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-Boolean to indicate model completeness (and consistency).
+List of booleans (or NAs) to indicate consistency of selected/all attributes.
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-list_completeness"></a>}}
+\if{latex}{\out{\hypertarget{method-list_completeness}{}}}
 \subsection{Method \code{list_completeness()}}{
-Returns a list of booleans for each parameter to indicate which attributes necessary to simulate the model have been set and are consistent.
+Returns a list of booleans (or NAs) for each parameter to indicate attributes that are necessary to simulate the model have been set and are consistent/valid.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PaleoPopModel$list_completeness()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
-List of booleans for each parameter to indicate to indicate completeness (and consistency).
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-incomplete_attributes"></a>}}
-\subsection{Method \code{incomplete_attributes()}}{
-Returns a list of attributes necessary to simulate the model that are incomplete.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PaleoPopModel$incomplete_attributes()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-List of incomplete attributes which prevent the model simulation.
+List of booleans (or NAs) for each parameter to indicate to indicate completeness (and consistency).
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{
