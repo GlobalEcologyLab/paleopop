@@ -1,7 +1,7 @@
 Package: paleopop
 Type: Package
 Title: Pattern-oriented Modelling Framework for Coupled Niche-population Paleo-climatic Models
-Version: 2.0.0
+Version: 2.0.1
 Author: Global ChEC Lab
 Maintainer: Sean Haythorne <sean.haythorne@adelaide.edu.au>
 Description: This extension of the poems pattern-oriented modelling (POM) framework 
