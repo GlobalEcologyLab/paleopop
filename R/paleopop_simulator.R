@@ -328,11 +328,10 @@ paleopop_simulator <- function(inputs) {
       harvest_rate <- 1 - (1 - harvest_rate)^years_per_step
 
       # Calculate numbers harvested
-      harvested[occupied_indices] <- stats::rpois(occupied_populations, population_abundances[occupied_indices]*harvest_rate)
-
-      # Remove harvested from population & ensure no negative values
+      harvested[occupied_indices] <- stats::rbinom(occupied_populations, population_abundances[occupied_indices], harvest_rate)
+      
+      # Remove harvested from population
       population_abundances[occupied_indices] <- population_abundances[occupied_indices] - harvested[occupied_indices]
-      population_abundances[occupied_indices][which(population_abundances[occupied_indices] < 0)] <- 0
 
     } # occupied populations & harvest?
 
