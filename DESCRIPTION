@@ -2,7 +2,9 @@ Package: paleopop
 Type: Package
 Title: Pattern-oriented Modelling Framework for Coupled Niche-population Paleo-climatic Models
 Version: 2.0.0
-Author: Global ChEC Lab
+Authors@R: c(
+    person("Sean", "Haythorne", email = "sean.haythorne@adelaide.edu.au", role = c("aut", "cre")),
+    person("Julia", "Pilowsky", email = "julia.pilowsky@adelaide.edu.au", role = c("aut"))
 Maintainer: Sean Haythorne <sean.haythorne@adelaide.edu.au>
 Description: This extension of the poems pattern-oriented modelling (POM) framework 
     provides a collection of modules and functions customized for paleontological 
@@ -11,9 +13,10 @@ Description: This extension of the poems pattern-oriented modelling (POM) framew
 Depends: R (>= 3.6.0)
 License: GPL (>= 3)
 Encoding: UTF-8
+LazyData: true
 RoxygenNote: 7.1.1
 Imports:
-    poems (>= 0.5.0),
+    poems (>= 1.0.0),
     R6 (>= 2.5.0),
     trend (>= 1.1.1)
 Collate:
@@ -22,3 +25,8 @@ Collate:
     PaleoRegion.R
     paleopop_simulator.R
     region_subset.R
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
