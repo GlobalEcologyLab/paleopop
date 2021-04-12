@@ -8,6 +8,25 @@
 #' fixed parameters is maintained when a model is cloned for various sampled parameters.
 #' Also provided are extensions to the methods for checking the consistency and
 #' completeness of model parameters.
+#' 
+#' @examples 
+#' # Ring Island example region
+#' coordinates <- data.frame(x = rep(seq(-178.02, -178.06, -0.01), 5),
+#'                           y = rep(seq(19.02, 19.06, 0.01), each = 5))
+#' template_raster <- Region$new(coordinates = coordinates)$region_raster # full extent
+#' sealevel_raster <- template_raster
+#' template_raster[][c(7:9, 12:14, 17:19)] <- NA # make Ring Island
+#' sealevel_raster[][c(7:9, 12:14, 17:18)] <- NA
+#' raster_stack <- raster::stack(x = append(replicate(9, template_raster), sealevel_raster))
+#' region <- PaleoRegion$new(template_raster = raster_stack)
+#' 
+#' # Model template
+#' template_model <- PaleoPopModel$new(simulation_function = "paleopop_simulator, # this is the default simulator
+#'                                     region = region, years_per_step = 25, # default is 1 year per step
+#'                                     time_steps = 10)
+#' template_model$required_attributes # more requirements than the SimulationModel object in poems
+#' template_model$is_complete() # the required attributes have not been filled in
+#' template_model#is_consistent() # however, the attributes that are filled in are consistent
 #'
 #' @importFrom R6 R6Class
 #' @importFrom poems Region
