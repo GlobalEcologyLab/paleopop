@@ -4,7 +4,7 @@ Title: Pattern-oriented Modelling Framework for Coupled Niche-population Paleo-c
 Version: 2.0.0
 Authors@R: c(
     person("Sean", "Haythorne", email = "sean.haythorne@adelaide.edu.au", role = c("aut", "cre")),
-    person("Julia", "Pilowsky", email = "julia.pilowsky@adelaide.edu.au", role = c("aut"))
+    person("Julia", "Pilowsky", email = "julia.pilowsky@adelaide.edu.au", role = c("aut")))
 Maintainer: Sean Haythorne <sean.haythorne@adelaide.edu.au>
 Description: This extension of the poems pattern-oriented modelling (POM) framework 
     provides a collection of modules and functions customized for paleontological 
