@@ -9,7 +9,7 @@
 #' @examples 
 #' # Ring Island example region
 #' coordinates <- data.frame(x = rep(seq(-178.02, -178.06, -0.01), 5),
-#' y = rep(seq(19.02, 19.06, 0.01), each = 5))
+#'                           y = rep(seq(19.02, 19.06, 0.01), each = 5))
 #' template_raster <- Region$new(coordinates = coordinates)$region_raster # full extent
 #' sealevel_raster <- template_raster
 #' template_raster[][c(7:9, 12:14, 17:19)] <- NA # make Ring Island
