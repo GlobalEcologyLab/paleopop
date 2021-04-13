@@ -26,7 +26,8 @@ Collate:
     paleopop_simulator.R
     region_subset.R
 Suggests: 
-    testthat,
+    testthat (>= 3.0.0),
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+Config/testthat/edition: 3
