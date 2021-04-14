@@ -16,6 +16,8 @@ knitr::opts_chunk$set(
 # paleopop
 
 <!-- badges: start -->
+[![Codecov test coverage](https://codecov.io/gh/GlobalEcologyLab/paleopop/branch/master/graph/badge.svg)](https://codecov.io/gh/GlobalEcologyLab/paleopop?branch=master)
+[![R-CMD-check](https://github.com/GlobalEcologyLab/paleopop/workflows/R-CMD-check/badge.svg)](https://github.com/GlobalEcologyLab/paleopop/actions)
 <!-- badges: end -->
 
 `paleopop` is an extension to `poems`, a spatially-explicit, process-explicit, pattern-oriented framework for modeling population dynamics. This extension adds functionality for modeling large populations at generational time-steps over paleontological time-scales. 
