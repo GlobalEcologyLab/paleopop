@@ -1,4 +1,5 @@
 test_that("subset range", {
+  library(sf)
   coordinates <- data.frame(x = rep(seq(-1, -5, -1), 5),
                             y = rep(seq(1, 5, 1), each = 5))
   values <- matrix(seq(1, 25, 1))
@@ -9,6 +10,7 @@ test_that("subset range", {
 })
 
 test_that("subset interpolation", {
+  library(sf)
   coordinates <- data.frame(x = rep(seq(-1, -5, -1), 5),
                             y = rep(seq(1, 5, 1), each = 5))
   values <- matrix(seq(1, 25, 1))
