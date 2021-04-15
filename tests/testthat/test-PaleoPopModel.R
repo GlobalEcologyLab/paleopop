@@ -1,6 +1,6 @@
 test_that("consistency and completeness", {
   region <- PaleoRegion$new(coordinates = array(c(1:4, 4:1), c(7, 2)))
-  attribute_aliases <- list(coords = "region$coordinates", sd = "standard_deviation", pops = "populations")
+  attribute_aliases <- list(sd = "standard_deviation", pops = "populations")
   nested_model <- PaleoPopModel$new(template = PaleoPopModel$new(),
                                       attribute_aliases = attribute_aliases)
   expect_equal(nested_model$list_consistency(), list(time_steps = NA, years_per_step = T, standard_deviation = NA,
