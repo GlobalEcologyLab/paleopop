@@ -13,7 +13,8 @@ test_that("results collection", {
                  transition_rate = 1.0, sd = 0.005, carrying_capacity = rep(3000, 7),
                  harvest = T, harvest_max = 0.2, harvest_z = 1.5, harvest_g = 0.4, harvest_max_n = 50,
                  human_density = array(rep(10), c(7,9)), 
-                 results_selection = c("abundance"))
+                 results_selection = c("abundance", "human_density"))
   expect_equal(signif(paleopop_simulator(inputs)$abundance[2:7,1], 1), seq(2000, 7000, 1000))
   expect_equal(signif(paleopop_simulator(inputs)$abundance[2:7, 9], 1), seq(1000, 6000, 1000))
+  expect_equal(paleopop_simulator(inputs)$human_density, array(rep(10), c(7,9)))
 })

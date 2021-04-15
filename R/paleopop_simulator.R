@@ -35,7 +35,7 @@
 #'     \item{\code{dispersal_target_k}}{Target population carrying capacity threshold for density dependent dispersal.}
 #'     \item{\code{abundance_threshold}}{Abundance threshold (that needs to be exceeded) for each population to persist.}
 #'     \item{\code{occupancy_threshold}}{Threshold for the number of populations occupied (that needs to be exceeded) for all populations to persist.}
-#'     \item{\code{results_selection}}{List of results selection from: "abundance", "ema", "extirpation", "harvested", "occupancy".}
+#'     \item{\code{results_selection}}{List of results selection from: "abundance", "ema", "extirpation", "harvested", "occupancy", "human_density".}
 #'   }
 #' @return Simulation results as a nested list (as selected):
 #'   \describe{
@@ -44,6 +44,7 @@
 #'     \item{\code{extirpation}}{Array of extirpation times for each population.}
 #'     \item{\code{harvested}}{Matrix of estimated individuals harvested (\emph{populations} rows by \emph{time_steps} columns).}
 #'     \item{\code{occupancy}}{Array of number of populations occupied at each time-step.}
+#'     \item{\code{human_density}}{Matrix of human densities, (\emph{populations} rows by \emph{time_steps} columns).}
 #'   }
 #'   
 #' @examples 
@@ -231,6 +232,9 @@ paleopop_simulator <- function(inputs) {
   }
   if ("occupancy" %in% results_selection) {
     results$occupancy <- array(0, time_steps)
+  }
+  if ("human_density" %in% results_selection) {
+    results$human_density <- inputs$human_density
   }
 
   # Dispersal tracking (for testing/debug purposes)

@@ -156,8 +156,8 @@ PaleoPopModel <- R6Class("PaleoPopModel",
                      abundance_threshold = , # or
                      occupancy_threshold = (is.numeric(param_value) && param_value >= 0),
                      results_selection = (is.character(param_value) &&
-                                            all(param_value %in% c("abundance", "ema", "extirpation", "harvested", "occupancy")) &&
-                                            any(c("abundance", "ema", "extirpation", "harvested", "occupancy") %in% param_value))
+                                            all(param_value %in% c("abundance", "ema", "extirpation", "harvested", "occupancy", "human_density")) &&
+                                            any(c("abundance", "ema", "extirpation", "harvested", "occupancy", "human_density") %in% param_value))
               )
           }
         }
