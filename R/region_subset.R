@@ -14,6 +14,10 @@
 #' @param orig_matrix Matrix of original values with rows corresponding to the original/full region coordinates.
 #' @param subset_coords Data frame (or matrix) of X-Y subset region coordinates (WGS84) in longitude (degrees West) and latitude (degrees North).
 #' @return A matrix of values corresponding to the subset region coordinates (using nearest spatial neighbour if original and subset coordinates differ).
+#' @importFrom sf st_geometry
+#' @importFrom sf st_as_sf
+#' @importFrom sf st_join
+#' @importFrom sf st_nearest_feature
 #' @export region_subset
 
 region_subset = function(orig_coords = NULL, orig_matrix = NULL, subset_coords = NULL) {

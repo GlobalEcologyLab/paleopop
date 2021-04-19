@@ -18,7 +18,7 @@ RoxygenNote: 7.1.1
 Imports:
     poems (>= 1.0.0),
     R6 (>= 2.5.0),
-    trend (>= 1.1.1)
+    sf (>= 0.9)
 Collate:
     data.R
     PaleoPopModel.R
@@ -29,7 +29,6 @@ Collate:
 Suggests: 
     testthat (>= 3.0.0),
     knitr,
-    rmarkdown,
-    covr
+    rmarkdown
 VignetteBuilder: knitr
 Config/testthat/edition: 3
