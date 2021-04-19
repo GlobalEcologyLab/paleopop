@@ -5,8 +5,6 @@
 
 <!-- badges: start -->
 
-[![Codecov test
-coverage](https://codecov.io/gh/GlobalEcologyLab/paleopop/branch/master/graph/badge.svg)](https://codecov.io/gh/GlobalEcologyLab/paleopop?branch=master)
 [![R-CMD-check](https://github.com/GlobalEcologyLab/paleopop/workflows/R-CMD-check/badge.svg)](https://github.com/GlobalEcologyLab/paleopop/actions)
 <!-- badges: end -->
 
@@ -47,7 +45,7 @@ raster::plot(region$temporal_mask_raster()[[1]], main = "Ring Island (first time
              colNA = "blue", legend = F)
 ```
 
-<img src="man/figures/README-paleoregion example-1.png" width="100%" />
+<img src="man/figures/README-paleoregion_example-1.png" width="100%" />
 
 ``` r
 raster::plot(region$temporal_mask_raster()[[10]], main = "Ring Island (last timestep)",
@@ -55,7 +53,7 @@ raster::plot(region$temporal_mask_raster()[[10]], main = "Ring Island (last time
              colNA = "blue", legend = F)
 ```
 
-<img src="man/figures/README-paleoregion example-2.png" width="100%" />
+<img src="man/figures/README-paleoregion_example-2.png" width="100%" />
 
 `paleopop` also includes the `PaleoPopModel` class for running
 simulations over paleo time scales, and the `PaleoPopResults` class for
@@ -87,27 +85,27 @@ results # examine
 #>       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
 #>  [1,]    0    0    0    0    0    0    0    0    0     0
 #>  [2,]    0    0    0    0    0    0    0    0    0     0
-#>  [3,]   42   68  110  184  274  434  617  817  872  1081
-#>  [4,]  578  712  782  991 1046 1028 1094 1029 1032  1220
-#>  [5,]   52   98  158  225  347  515  660 1043  902  1026
-#>  [6,]  466  615  904  959 1018  957  870  997  974   846
-#>  [7,]  575  636  755 1055  991  767  936  869  855   749
-#>  [8,] 1109 1058  992 1050 1024 1074 1015 1256 1065  1010
-#>  [9,] 1108  974  828  902 1095  993  875  973 1014   960
+#>  [3,]   33   50   62  107  170  300  441  575  798   846
+#>  [4,]   30   60   90  160  270  358  457  705  979   896
+#>  [5,]  310  416  527  663  744  968 1058  946 1013   951
+#>  [6,]  510  623  732  900  831  920 1135  809 1122   879
+#>  [7,]  758  914  903 1019  846  978 1069 1200  962   914
+#>  [8,]  901 1078 1062 1040  909  902  970  831  735   794
+#>  [9,] 1133 1177 1069  918  947  929 1207 1056 1178  1013
 #> [10,]    0    0    0    0    0    0    0    0    0     0
-#> [11,] 1088 1066 1128 1200  941  948 1023 1083 1125  1205
-#> [12,]    0    0    0    0    0    0    0    0    0     0
-#> [13,]   84  162  273  416  596  635  848  858  725   752
-#> [14,]  103  192  306  464  724  769  788  855  744   942
-#> [15,] 2575  959  966  920  920  890  983  992  891   801
-#> [16,] 1017  925  945  936  943 1040  960 1002 1004  1064
-#> [17,] 1315 1131 1183 1186  931  820  994 1128  950   884
+#> [11,]   13   23   32   67  119  209  379  558  780   941
+#> [12,]   13   21   24   55  110  173  284  484  620   807
+#> [13,]   77  150  241  396  543  763  856  965  977   898
+#> [14,]   16   28   52   92  153  292  436  602  734   830
+#> [15,]   38   62  112  177  284  427  591  713  796   723
+#> [16,]  393  631  680  835  864  962 1040  947 1214   986
+#> [17,] 1300 1061  962 1005  853 1053 1027 1071  830   857
 raster::plot(region$raster_from_values(results$abundance[,10]),
              main = "Final abundance", xlab = "Longitude (degrees)", 
              ylab = "Latitude (degrees)", colNA = "blue")
 ```
 
-<img src="man/figures/README-paleosimulator example-1.png" width="100%" />
+<img src="man/figures/README-paleosimulator_example-1.png" width="100%" />
 
 A practical example of how to use `paleopop`, with more complex
 parameterization, can be found in the vignette.

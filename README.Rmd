@@ -16,7 +16,6 @@ knitr::opts_chunk$set(
 # paleopop
 
 <!-- badges: start -->
-[![Codecov test coverage](https://codecov.io/gh/GlobalEcologyLab/paleopop/branch/master/graph/badge.svg)](https://codecov.io/gh/GlobalEcologyLab/paleopop?branch=master)
 [![R-CMD-check](https://github.com/GlobalEcologyLab/paleopop/workflows/R-CMD-check/badge.svg)](https://github.com/GlobalEcologyLab/paleopop/actions)
 <!-- badges: end -->
 
@@ -34,7 +33,7 @@ devtools::install_github("GlobalEcologyLab/paleopop")
 
 One of the major additions in `paleopop` is the `PaleoRegion` R6 class, which allows for regions that change over time due to ice sheets, sea level, bathymetry, and so on. 
 
-```{r paleoregion example}
+```{r paleoregion_example}
 library(poems)
 library(paleopop)
 coordinates <- data.frame(x = rep(seq(-178.02, -178.06, -0.01), 5),
@@ -55,7 +54,7 @@ raster::plot(region$temporal_mask_raster()[[10]], main = "Ring Island (last time
 
 `paleopop` also includes the `PaleoPopModel` class for running simulations over paleo time scales, and the `PaleoPopResults` class for storing the outputs from the paleo population simulator.
 
-```{r paleosimulator example}
+```{r paleosimulator_example}
 model_template <- PaleoPopModel$new(
   region = region,
   time_steps = 10,
