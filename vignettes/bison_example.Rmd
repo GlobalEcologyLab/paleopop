@@ -5,8 +5,11 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Workflow example for the steppe bison}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r, include = FALSE}
@@ -16,11 +19,21 @@ knitr::opts_chunk$set(
 )
 ```
 
-In this vignette, we demonstrate the new features that `paleopop` adds to `poems` for modeling populations over paleo-ecological time scales using the example of the steppe bison in Siberia. The steppe bison was once distributed throughout the Northern Hemisphere. It became regionally extinct in Siberia 9,500 years ago, and it is thought to have gone completely extinct in Canada 500 years ago. We will model the range dynamics of the steppe bison in Siberia from the Last Glacial Maximum (21,000 years ago) until 9,000 years before present. Along the way, we will learn how `paleopop` handles regions, model templates, simulations, and results.
+In this vignette, we demonstrate the new features that `paleopop` adds
+to `poems` for modeling populations over paleo-ecological time scales
+using the example of the steppe bison in Siberia. The steppe bison was
+once distributed throughout the Northern Hemisphere. It became
+regionally extinct in Siberia 9,500 years ago, and it is thought to have
+gone completely extinct in Canada 500 years ago. We will model the range
+dynamics of the steppe bison in Siberia from the Last Glacial Maximum
+(21,000 years ago) until 9,000 years before present. Along the way, we
+will learn how `paleopop` handles regions, model templates, simulations,
+and results.
 
 # Setup
 
-Here we load `poems` and `paleopop` and set the number of parallel cores for simulation and an output directory for results.
+Here we load `poems` and `paleopop` and set the number of parallel cores
+for simulation and an output directory for results.
 
 ```{r setup}
 library(poems)
@@ -31,7 +44,13 @@ output_dir <- tempdir()
 
 # 1. Create a PaleoRegion
 
-While `poems` implements a static region object, in `paleopop` we use something different, because regions on paleo time scales are never static. Oceans rise, continents collide, and the contours of our spatially explicit landscape shift. In the case of the steppe bison in Siberia, the sea level rises over time. `paleopop` includes a temporally dynamic raster stack of Siberia we can use to build a `PaleoRegion` object. The raster resolution is 2 by 2.
+While `poems` implements a static region object, in `paleopop` we use
+something different, because regions on paleo time scales are never
+static. Oceans rise, continents collide, and the contours of our
+spatially explicit landscape shift. In the case of the steppe bison in
+Siberia, the sea level rises over time. `paleopop` includes a temporally
+dynamic raster stack of Siberia we can use to build a `PaleoRegion`
+object. The raster resolution is 2 by 2.
 
 ```{r siberia_raster, fig.align = "center", fig.width = 7, fig.height = 5}
 raster::plot(paleopop::siberia_raster[[1]], main = "Siberia raster (LGM)",
@@ -42,7 +61,14 @@ raster::plot(paleopop::siberia_raster[[1001]], main = "Siberia raster (9000 BP)"
              colNA = "blue")
 ```
 
-We can use this `RasterStack` object as a template to create a `PaleoRegion` object, which will set the indices of occupiable cells at each time step, and mask cells that are not occupiable at a time step (in the case of this example, because those cells are now underwater.) When we plot the `region_raster` in the `PaleoRegion` object, we see the maximum extent of the region, showing all cells that are occupiable at any time step. The `temporal_mask_raster` method generates a `RasterStack` that marks occupiable cells at each time step with a 1.
+We can use this `RasterStack` object as a template to create a
+`PaleoRegion` object, which will set the indices of occupiable cells at
+each time step, and mask cells that are not occupiable at a time step
+(in the case of this example, because those cells are now underwater.)
+When we plot the `region_raster` in the `PaleoRegion` object, we see the
+maximum extent of the region, showing all cells that are occupiable at
+any time step. The `temporal_mask_raster` method generates a
+`RasterStack` that marks occupiable cells at each time step with a 1.
 
 ```{r paleoregion, fig.align = "center", fig.width = 7, fig.height = 5}
 region <- PaleoRegion$new(template_raster = paleopop::siberia_raster)
@@ -53,7 +79,9 @@ raster::plot(region$region_raster, main = "Bison region maximum extent (cell ind
 
 # 2. Generate dispersal and carrying capacity
 
-This part of the workflow is identical to `poems`: we create `Generator` objects to dynamically generate dispersal between grid cells and habitat suitability at each point in space and time.
+This part of the workflow is identical to `poems`: we create `Generator`
+objects to dynamically generate dispersal between grid cells, initial
+abundance, and carrying capacity at each point in space and time.
 
 ## 2.a. Generate dispersal matrix
 
@@ -61,8 +89,9 @@ We cut down on computational time during the simulations by generating
 ahead of time a matrix that describes the potential dispersal rates
 between every pairwise combination of cells in the study region.
 Dispersal rates are calculated using a distance-based dispersal function
-as well as, optionally, a conductance/friction landscape that maps out barriers
-to dispersal, such as ice or mountains. (We will omit the friction landscape for this example.)
+as well as, optionally, a conductance/friction landscape that maps out
+barriers to dispersal, such as ice or mountains. (We will omit the
+friction landscape for this example.)
 
 ```{r generate dispersal matrix}
 dispersal_gen <- DispersalGenerator$new(region = region,
@@ -83,8 +112,8 @@ head(test_dispersal[[1]])
 
 Here we will generate a dynamic landscape based on a raster stack of
 habitat suitability values (from 0, totally unsuitable, to 1, ideally
-suitable). `paleopop` has a spatiotemporally explicit habitat suitability `RasterStack` for Siberia from
-21,000 - 9,000 years BP.
+suitable). `paleopop` has a spatiotemporally explicit habitat
+suitability `RasterStack` for Siberia from 21,000 - 9,000 years BP.
 
 ```{r hs_raster, fig.align = "center", fig.width = 7, fig.height = 5}
 raster::plot(bison_hs_raster[[1]], main = "Bison habitat suitability (LGM)",
@@ -127,7 +156,8 @@ raster::plot(region$raster_from_values(test_capacity$initial_abundance[,1]), mai
 
 # 3. Create the model template
 
-We create a model template for simulation using the `PaleoPopModel` object. Let's check the required attributes for the object.
+We create a model template for simulation using the `PaleoPopModel`
+object. Let's check the required attributes for the object.
 
 ```{r paleopopmodel attributes}
 model_template <- PaleoPopModel$new()
@@ -135,7 +165,10 @@ model_template$model_attributes # all possible attributes
 model_template$required_attributes # required attributes to run simulations
 ```
 
-Initial abundance, carrying capacity, and dispersal data will be provided by the generators above. Here we will define an environmental correlation matrix so there can be spatial autocorrelation in the simulations.
+Initial abundance, carrying capacity, and dispersal data will be
+provided by the generators above. Here we will define an environmental
+correlation matrix so there can be spatial autocorrelation in the
+simulations.
 
 ```{r autocorrelation}
 # Distance-based environmental correlation (via a compacted Cholesky decomposition)
@@ -143,13 +176,19 @@ env_corr <- SpatialCorrelation$new(region = region, amplitude = 0.4, breadth = 5
 correlation <- env_corr$get_compact_decomposition(decimals = 2)
 ```
 
-Normally we would have spatiotemporally dynamic data on human density over time, which the prey- and predator-dependent harvest function translates into numbers of bison harvested, but in the interest of simplicity for this example, we will create a matrix of constant low human density.
+Normally we would have spatiotemporally dynamic data on human density
+over time, which the prey- and predator-dependent harvest function
+translates into numbers of bison harvested, but in the interest of
+simplicity for this example, we will create a matrix of constant low
+human density.
 
 ```{r human density}
 human_density <- array(rep(0.1), c(913, 1001)) # rows = populations and columns = timesteps
 ```
 
-Now we have all the components we need to build the model template, less the model attributes that will be sampled via Latin Hypercube Sampling later.
+Now we have all the components we need to build the model template, less
+the model attributes that will be sampled via Latin Hypercube Sampling
+later.
 
 ```{r model template}
 model_template <- PaleoPopModel$new(
@@ -175,14 +214,18 @@ model_template <- PaleoPopModel$new(
   # dispersal_data: generated
   # abundance_threshold: sampled
   # initial_n: sampled
-  occupancy_threshold = 1, # this was set to 2 in the mammoth model
-  results_selection = c("abundance")
+  occupancy_threshold = 1,
+  results_selection = c("abundance", "harvested")
 )
 ```
 
 # 4. Sample model and generator parameters for each simulation
 
-Here the workflow is the same as in `poems`: we sample evenly along a range of values so as to create an uninformative prior, and use these to parameterize different simulations. For the sake of this example, we will sample 100 different parameter combinations, but it is advisable to run more in order to fully sample the parameter space.
+Here the workflow is the same as in `poems`: we sample evenly along a
+range of values so as to create an uninformative prior, and use these to
+parameterize different simulations. For the sake of this example, we
+will sample 100 different parameter combinations, but it is advisable to
+run more in order to fully sample the parameter space.
 
 ```{r latin hypercube sampling}
 nsims <- 100 # adjust to run your own example if desired
@@ -205,7 +248,9 @@ head(sample_data)
 
 # 5. Run the simulations
 
-Here we build a simulation manager to manage the sample data, generators, and model template. The simulation manager will use the `paleopop_simulator` function to run simulations.
+Here we build a simulation manager to manage the sample data,
+generators, and model template. The simulation manager will use the
+`paleopop_simulator` function to run simulations.
 
 ```{r simulate}
 sim_manager <- SimulationManager$new(sample_data = sample_data, 
@@ -221,11 +266,16 @@ run_output <- sim_manager$run()
 run_output$summary
 ```
 
-The simulation log, `run_output`, can be examined for error messages and failure indices if any of the simulations fail.
+The simulation log, `run_output`, can be examined for error messages and
+failure indices if any of the simulations fail.
 
 # 6. Examine the results
 
-We can explore the results of the simulations using the convenient wrapper of the `PaleoPopResults` object. Although we selected our result output as "abundance" in the model template above, we can look at other result metrics, some of which are unique to `PaleoPopResults`, via the `ResultsManager`.
+We can explore the results of the simulations using the convenient
+wrapper of the `PaleoPopResults` object. Although we selected our result
+output as "abundance" in the model template above, we can look at other
+result metrics, some of which are unique to `PaleoPopResults`, via the
+`ResultsManager`.
 
 ```{r results}
 results_model <- PaleoPopResults$new(region = region, time_steps = 1001, trend_interval = 1:10)
@@ -251,9 +301,12 @@ metrics_manager$summary_functions$abundance_trend <- function(simulation_results
 gen_log <- metrics_manager$generate(results_dir = output_dir)
 ```
 
-You can examine the log for the summary metrics calculation to browse error messages for failed calculations.
+You can examine the log for the summary metrics calculation to browse
+error messages for failed calculations.
 
-Now that we've calculated some summary metrics, based on outputs from `PaleoPopResults` like extinction time and abundance trend, we can examine the simulation results.
+Now that we've calculated some summary metrics, based on outputs from
+`PaleoPopResults` like extinction time and abundance trend, we can
+examine the simulation results.
 
 ```{r histograms, fig.align = "center", fig.width = 7, fig.height = 5}
 hist(metrics_manager$summary_metric_data$abundance_trend, 
@@ -262,6 +315,12 @@ hist(metrics_manager$summary_metric_data$extinction_time,
      main = "Histogram of extinction time", xlab = "Extinction time (years BP)")
 ```
 
-Looking at these results, abundance trend could be a suitable metric to converge toward a validation target, since there is a spread of outcomes, but extinction time would not be ideal for validation, since the outcomes are binary: either the population rapidly becomes extinct, or it persists for the whole simulation.
+Looking at these results, abundance trend could be a suitable metric to
+converge toward a validation target, since there is a spread of
+outcomes, but extinction time would not be ideal for validation, since
+the outcomes are binary: either the population rapidly becomes extinct,
+or it persists for the whole simulation.
 
-From here, you may continue with the `poems` workflow, creating a `Validator` object for pattern-oriented modeling to validate the results of the simulation.
+From here, you may continue with the `poems` workflow, creating a
+`Validator` object for pattern-oriented modeling to validate the results
+of the simulation.
