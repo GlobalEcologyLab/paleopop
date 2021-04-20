@@ -1,5 +1,6 @@
 test_that("subset range", {
   library(sf)
+  library(dplyr)
   coordinates <- data.frame(x = rep(seq(-1, -5, -1), 5),
                             y = rep(seq(1, 5, 1), each = 5))
   values <- matrix(seq(1, 25, 1))

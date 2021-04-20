@@ -4,12 +4,13 @@
 \alias{PaleoPopModel}
 \title{R6 class representing a population model for the paleopop simulator}
 \description{
-\code{\link[R6:R6Class]{R6}} class representing a spatially-explicit
-demographic-based population model. It extends the \code{\link{SimulationModel}}
-class with parameters for the \code{\link{paleopop_simulator}}. It inherits
-functionality for creating a nested model, whereby a nested template model with
-fixed parameters is maintained when a model is cloned for various sampled parameters.
-Also provided are extensions to the methods for checking the consistency and
+\code{\link[R6:R6Class]{R6}} class representing a
+spatially-explicit demographic-based population model. It extends the
+\code{\link{SimulationModel}} class with parameters for the
+\code{\link{paleopop_simulator}}. It inherits functionality for creating a
+nested model, whereby a nested template model with fixed parameters is
+maintained when a model is cloned for various sampled parameters. Also
+provided are extensions to the methods for checking the consistency and
 completeness of model parameters.
 }
 \examples{
@@ -26,8 +27,8 @@ raster_stack <- raster::stack(x = append(replicate(9, template_raster), sealevel
 region <- PaleoRegion$new(template_raster = raster_stack)
 
 # Model template
-template_model <- PaleoPopModel$new(simulation_function = "paleopop_simulator", # this is the default simulator
-                                    region = region, years_per_step = 25, # default is 1 year per step
+template_model <- PaleoPopModel$new(simulation_function = "paleopop_simulator", # the default
+                                    region = region, years_per_step = 25, # default: 1 year
                                     time_steps = 10)
 template_model$required_attributes # more requirements than the SimulationModel object in poems
 template_model$is_complete() # the required attributes have not been filled in

@@ -1,4 +1,5 @@
 test_that("consistency and completeness", {
+  library(raster)
   region <- PaleoRegion$new(coordinates = array(c(1:4, 4:1), c(7, 2)))
   attribute_aliases <- list(sd = "standard_deviation", pops = "populations")
   nested_model <- PaleoPopModel$new(template = PaleoPopModel$new(),

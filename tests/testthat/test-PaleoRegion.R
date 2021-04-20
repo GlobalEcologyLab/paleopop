@@ -1,4 +1,5 @@
 test_that("temporal mask", {
+  library(raster)
   coordinates <- data.frame(x = rep(seq(-178.02, -178.06, -0.01), 5),
                             y = rep(seq(19.02, 19.06, 0.01), each = 5))
   template_raster <- Region$new(coordinates = coordinates)$region_raster # full extent
@@ -13,6 +14,7 @@ test_that("temporal mask", {
 })
 
 test_that("temporal mask raster", {
+  library(raster)
   coordinates <- data.frame(x = rep(seq(-178.02, -178.06, -0.01), 5),
                             y = rep(seq(19.02, 19.06, 0.01), each = 5))
   template_raster <- Region$new(coordinates = coordinates)$region_raster # full extent

@@ -53,6 +53,7 @@ dynamic raster stack of Siberia we can use to build a `PaleoRegion`
 object. The raster resolution is 2 by 2.
 
 ```{r siberia_raster, fig.align = "center", fig.width = 7, fig.height = 5}
+library(raster)
 raster::plot(paleopop::siberia_raster[[1]], main = "Siberia raster (LGM)",
              xlab = "Longitude (degrees)", ylab = "Latitude (degrees)",
              colNA = "blue")
@@ -96,9 +97,9 @@ friction landscape for this example.)
 ```{r generate dispersal matrix}
 dispersal_gen <- DispersalGenerator$new(region = region,
                                         dispersal_max_distance = 500, # km
-                                        distance_classes = seq(10, 500, 10),
-                                        distance_scale = 1000, # km
-                                        dispersal_friction = DispersalFriction$new(),
+                                        distance_classes = seq(10, 500, 10), # divide into bins
+                                        distance_scale = 1000, # sets units to km
+                                        dispersal_friction = DispersalFriction$new(), # empty
                                         inputs = c("dispersal_p", "dispersal_b"),
                                         decimals = 3)
 dispersal_gen$calculate_distance_data(use_longlat = TRUE)

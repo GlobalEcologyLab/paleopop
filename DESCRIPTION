@@ -25,11 +25,14 @@ Collate:
     PaleoPopResults.R
     PaleoRegion.R
     paleopop_simulator.R
+    paleopop.R
     region_subset.R
 Suggests: 
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
-    markdown
+    markdown,
+    dplyr,
+    raster
 VignetteBuilder: knitr
 Config/testthat/edition: 3

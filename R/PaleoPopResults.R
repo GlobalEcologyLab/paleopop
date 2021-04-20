@@ -7,6 +7,8 @@
 #' density.
 #' 
 #' @examples 
+#' library(raster)
+#' library(poems)
 #' # Ring Island example region
 #' coordinates <- data.frame(x = rep(seq(-178.02, -178.06, -0.01), 5),
 #'                           y = rep(seq(19.02, 19.06, 0.01), each = 5))
@@ -24,7 +26,7 @@
 #' years_per_step = 12, # years per generational time-step
 #' standard_deviation = 0.1,
 #' growth_rate_max = 0.6,
-#' harvest = F,
+#' harvest = FALSE,
 #' populations = region$region_cells,
 #' initial_abundance = seq(9000, 0, -1000),
 #' transition_rate = 1.0,

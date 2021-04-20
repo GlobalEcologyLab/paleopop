@@ -20,10 +20,10 @@
 #' region <- PaleoRegion$new(template_raster = raster_stack)
 #' raster::plot(region$temporal_mask_raster()[[1]], main = "Ring Island (first timestep)",
 #'              xlab = "Longitude (degrees)", ylab = "Latitude (degrees)",
-#'              colNA = "blue", legend = F)
+#'              colNA = "blue", legend = FALSE)
 #' raster::plot(region$temporal_mask_raster()[[10]], main = "Ring Island (last timestep)",
 #'              xlab = "Longitude (degrees)", ylab = "Latitude (degrees)",
-#'              colNA = "blue", legend = F)
+#'              colNA = "blue", legend = FALSE)
 #'
 #' @importFrom R6 R6Class
 #' @importFrom poems Region
