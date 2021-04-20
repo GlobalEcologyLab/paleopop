@@ -10,6 +10,8 @@ spatial grid cells, defined via a \emph{RasterLayer} object
 which cells are included at each time step.
 }
 \examples{
+library(poems)
+library(raster)
 # Ring Island example region
 coordinates <- data.frame(x = rep(seq(-178.02, -178.06, -0.01), 5),
                           y = rep(seq(19.02, 19.06, 0.01), each = 5))

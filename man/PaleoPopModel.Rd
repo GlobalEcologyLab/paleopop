@@ -13,6 +13,8 @@ Also provided are extensions to the methods for checking the consistency and
 completeness of model parameters.
 }
 \examples{
+library(poems)
+library(raster)
 # Ring Island example region
 coordinates <- data.frame(x = rep(seq(-178.02, -178.06, -0.01), 5),
                           y = rep(seq(19.02, 19.06, 0.01), each = 5))

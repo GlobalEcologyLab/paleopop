@@ -29,6 +29,7 @@ Collate:
 Suggests: 
     testthat (>= 3.0.0),
     knitr,
-    rmarkdown
+    rmarkdown,
+    markdown
 VignetteBuilder: knitr
 Config/testthat/edition: 3
