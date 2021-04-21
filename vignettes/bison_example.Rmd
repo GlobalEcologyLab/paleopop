@@ -42,6 +42,22 @@ parallel_cores <- 2
 output_dir <- tempdir()
 ```
 
+# Table of Contents
+
+In this vignette, we will do the following:
+
+1.  Create a PaleoRegion
+
+2.  Generate dispersal rates and carrying capacities
+
+3.  Create the model template
+
+4.  Sample parameter space with Latin Hypercube Sampling
+
+5.  Run the simulations
+
+6.  Examine the results
+
 # 1. Create a PaleoRegion
 
 While `poems` implements a static region object, in `paleopop` we use
@@ -102,7 +118,7 @@ dispersal_gen <- DispersalGenerator$new(region = region,
                                         dispersal_friction = DispersalFriction$new(), # empty
                                         inputs = c("dispersal_p", "dispersal_b"),
                                         decimals = 3)
-dispersal_gen$calculate_distance_data(use_longlat = TRUE)
+dispersal_gen$calculate_distance_data(use_longlat = TRUE) # pre-calculate matrix of distances between cells
 test_dispersal <- dispersal_gen$generate(input_values =
                                                        list(dispersal_p = 0.5,
                                                             dispersal_b = 200))$dispersal_data
@@ -128,29 +144,37 @@ capacities. Therefore, we need to enter these habitat suitability
 landscapes into a generator that can translate them into an initial
 abundance landscape and into a dynamic carrying capacity landscape.
 
+To do this, we must create a `poems::Generator` object. Because every
+simulation has different requirements, we must set our own inputs,
+outputs, and generator functions to convert the inputs into the outputs.
+Here, we will very simply use a maximum density parameter and multiply
+it by the habitat suitability.
+
 ```{r carrying capacity generator, fig.align = "center", fig.width = 7, fig.height = 5}
+# Convert the habitat suitability raster to matrix
 bison_hs <- bison_hs_raster[region$region_indices]
+# Create the generator
 capacity_gen <- Generator$new(description = "Capacity generator",
                               example_hs = bison_hs, 
-                              inputs = c("initial_n", "density_max"),
+                              inputs = c("density_max"),
                               outputs = c("initial_abundance", "carrying_capacity"))
+# indicate that initial abundance and carrying capacity are required
 capacity_gen$add_generative_requirements(list(initial_abundance = "function",
                                               carrying_capacity = "function"))
-capacity_gen$add_function_template("initial_abundance",
-                                   function_def = function(params) {
-                                     init <- params$example_hs[,1]
-                                     init[is.nan(init)] <- 0
-                                     stats::rmultinom(1, size = params$initial_n,
-                                                      prob = init)
-                                   },
-                                   call_params = c("initial_n", "example_hs"))
+# define custom generative functions
 capacity_gen$add_function_template("carrying_capacity",
                                    function_def = function(params) {
                                      round(params$density_max*params$example_hs)
                                    },
                                    call_params = c("density_max", "example_hs"))
-test_capacity <- capacity_gen$generate(input_values = list(initial_n = 500, density_max = 2000))
-raster::plot(region$raster_from_values(test_capacity$initial_abundance[,1]), main = "Initial abundance",
+capacity_gen$add_function_template("initial_abundance",
+                                   function_def = function(params) {
+                                     params$carrying_capacity[,1]
+                                   },
+                                   call_params = c("carrying_capacity"))
+# test run
+test_capacity <- capacity_gen$generate(input_values = list(density_max = 2000))
+raster::plot(region$raster_from_values(test_capacity$initial_abundance), main = "Initial abundance",
              xlab = "Longitude (degrees)", ylab = "Latitude (degrees)",
              colNA = "blue")
 ```
@@ -179,9 +203,15 @@ correlation <- env_corr$get_compact_decomposition(decimals = 2)
 
 Normally we would have spatiotemporally dynamic data on human density
 over time, which the prey- and predator-dependent harvest function
-translates into numbers of bison harvested, but in the interest of
-simplicity for this example, we will create a matrix of constant low
-human density.
+translates into numbers of bison harvested. The harvest function in
+`paleopop` is defined by `harvest_z`, which determines whether
+harvesting is a Type II or Type III functional response, `harvest_g`, a
+constant added to the denominator that reduces harvest rates, and
+`harvest_max_n`, a ceiling on maximum prey density that can be
+harvested.
+
+In the interest of simplicity for this example, we will create a matrix
+of constant low human density.
 
 ```{r human density}
 human_density <- array(rep(0.1), c(913, 1001)) # rows = populations and columns = timesteps
@@ -195,11 +225,12 @@ later.
 model_template <- PaleoPopModel$new(
   simulation_function = "paleopop_simulator", # this is the default; made it explicit for the example
   region = region,
+  # coordinates: you could use XY coordinates to define the region instead
   time_steps = 1001,
   years_per_step = 12, # generational length for bison
-  populations = region$region_cells,
+  populations = region$region_cells, # extracts number of population cells
   # initial_abundance: generated
-  transition_rate = 1.0,
+  transition_rate = 1.0, # rate of transition between generations
   # standard_deviation: sampled
   compact_decomposition = correlation,
   # carrying_capacity: generated
@@ -211,22 +242,29 @@ model_template <- PaleoPopModel$new(
   # harvest_z: sampled
   # harvest_max_n: sampled
   human_density = human_density,
-  dispersal_target_k = 10,
+  dispersal_target_k = 10, # minimum carrying capacity that attracts dispersers
   # dispersal_data: generated
   # abundance_threshold: sampled
   # initial_n: sampled
-  occupancy_threshold = 1,
-  results_selection = c("abundance", "harvested")
+  occupancy_threshold = 1, # threshold: # of populations for the species to persist
+  random_seed = 321,
+  results_selection = c(
+    # ema (expected minimum abundance), extirpation, occupancy, human_density,
+    "abundance", "harvested"
+    )
 )
 ```
 
 # 4. Sample model and generator parameters for each simulation
 
-Here the workflow is the same as in `poems`: we sample evenly along a
-range of values so as to create an uninformative prior, and use these to
-parameterize different simulations. For the sake of this example, we
-will sample 100 different parameter combinations, but it is advisable to
-run more in order to fully sample the parameter space.
+Here the workflow is the same as in `poems`: we sample along a range of
+values so as to create a prior, and use these to parameterize different
+simulations. Here, we will sample each range of values *uniformly* so as
+to create an *uninformative* prior, but the LHS generator object offers
+options for sampling along different distributions to create an
+*informative* prior. For the sake of this example, we will sample 100
+different parameter combinations, but it is advisable to run more in
+order to fully sample the parameter space.
 
 ```{r latin hypercube sampling}
 nsims <- 100 # adjust to run your own example if desired
@@ -234,13 +272,12 @@ nsims <- 100 # adjust to run your own example if desired
 lhs_generator <- LatinHypercubeSampler$new()
 lhs_generator$set_uniform_parameter("standard_deviation", lower = 0, upper = sqrt(0.06))
 lhs_generator$set_uniform_parameter("growth_rate_max", lower = log(1.31), upper = log(2.84))
-lhs_generator$set_uniform_parameter("abundance_threshold", lower = 0, upper = 50, decimals = 0)
+lhs_generator$set_uniform_parameter("abundance_threshold", lower = 0, upper = 500, decimals = 0)
 lhs_generator$set_uniform_parameter("harvest_max", lower = 0, upper = 0.35)
 lhs_generator$set_uniform_parameter("harvest_z", lower = 1, upper = 2)
 lhs_generator$set_uniform_parameter("density_max", lower = 500, upper = 3250) # alias for harvest_max_n
 lhs_generator$set_uniform_parameter("dispersal_p", lower = 0.05, upper = 0.25) # for the dispersal generator
 lhs_generator$set_uniform_parameter("dispersal_b", lower = 65, upper = 145) # for the dispersal generator
-lhs_generator$set_uniform_parameter("initial_n", lower = 2000, upper = 5000) # for the capacity generator
 
 sample_data <- lhs_generator$generate_samples(number = nsims, random_seed = 123)
 sample_data$sample <- c(1:nsims)
@@ -268,35 +305,52 @@ run_output$summary
 ```
 
 The simulation log, `run_output`, can be examined for error messages and
-failure indices if any of the simulations fail.
+failure indices if any of the simulations fail. There is also a detailed
+simulation log created in the output directory.
 
 # 6. Examine the results
 
 We can explore the results of the simulations using the convenient
-wrapper of the `PaleoPopResults` object. Although we selected our result
-output as "abundance" in the model template above, we can look at other
-result metrics, some of which are unique to `PaleoPopResults`, via the
-`ResultsManager`.
+wrapper of the `PaleoPopResults` object. Each `PaleoPopResults` object
+can hold the result of one simulation, and it can generate outputs that
+were not specified in the results selection above, such as extirpation
+times for each population.
 
 ```{r results}
+results1 <- PaleoPopResults$new(
+  results = readRDS(paste0(output_dir, "/sample_1_results.RData")),
+  region = region, time_steps = 1001
+  )
+head(results1$extirpation)
+```
+
+We can also use a `PaleoPopResults` object as a kind of template for the
+`ResultsManager`, an object that can calculate summary metrics for many
+results all at once. As with the generators, we must define our own
+custom metrics functions, because each *in silico* experiment calls for
+a different set of metrics to summarize the outputs. We can use the
+metrics generated by the `PaleoPopResults` object as the basis for our
+custom summary metrics.
+
+```{r results manager}
 results_model <- PaleoPopResults$new(region = region, time_steps = 1001, trend_interval = 1:10)
 metrics_manager <- ResultsManager$new(simulation_manager = sim_manager,
                                       simulation_results = results_model,
-                                      generators = NULL) # don't need generative models
+                                      generators = NULL) # don't need generators
 metrics_manager$summary_metrics <- c("abundance_trend", "extinction_time")
 metrics_manager$summary_functions <- list()
 
 metrics_manager$summary_functions$extinction_time <- function(simulation_results) {
   extinction_time <- -12*(1001 - simulation_results$all$extirpation)-9001 # converts timestep to years BP
   if (is.na(extinction_time)) {
-    extinction_time <- -9001
+    extinction_time <- -9001 # if NA, then it survived to the end of the simulation
   }
   return(extinction_time)
 }
 
 metrics_manager$summary_functions$abundance_trend <- function(simulation_results) {
   abundance_trend <- simulation_results$all$abundance_trend
-  return(abundance_trend)
+  return(abundance_trend) # this will use the trend interval specified above
 }
 
 gen_log <- metrics_manager$generate(results_dir = output_dir)
@@ -316,12 +370,13 @@ hist(metrics_manager$summary_metric_data$extinction_time,
      main = "Histogram of extinction time", xlab = "Extinction time (years BP)")
 ```
 
-Looking at these results, abundance trend could be a suitable metric to
-converge toward a validation target, since there is a spread of
-outcomes, but extinction time would not be ideal for validation, since
-the outcomes are binary: either the population rapidly becomes extinct,
-or it persists for the whole simulation.
+Looking at these results, both of these summary metrics, abundance trend
+over the first ten time steps and extinction time, could be a suitable
+metric to converge toward a validation target, since there is a spread
+of outcomes.
 
-From here, you may continue with the `poems` workflow, creating a
-`Validator` object for pattern-oriented modeling to validate the results
-of the simulation.
+From here, you may continue with the `poems` workflow, as explained in
+the `poems`
+[vignette](https://cran.r-project.org/web//packages/poems/vignettes/thylacine_example.pdf),
+creating a `Validator` object for pattern-oriented modeling to validate
+the results of the simulation.
