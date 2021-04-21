@@ -67,7 +67,7 @@
 #' years_per_step = 12, # years per generational time-step
 #' standard_deviation = 0.1,
 #' growth_rate_max = 0.6,
-#' harvest = F,
+#' harvest = FALSE,
 #' populations = region$region_cells,
 #' initial_abundance = seq(9000, 0, -1000),
 #' transition_rate = 1.0,
@@ -83,7 +83,7 @@
 #' # Simulations
 #' results <- paleopop_simulator(model_template) # input as PaleoPopModel object
 #' inputs <- model_template$get_attributes()
-#' population_simulator(inputs) # input as list of attributes
+#' paleopop_simulator(inputs) # input as list of attributes
 #' 
 #' @export paleopop_simulator
 

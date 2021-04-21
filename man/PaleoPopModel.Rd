@@ -98,7 +98,7 @@ template_model#is_consistent() # however, the attributes that are filled in are 
 
 \item{\code{occupancy_threshold}}{Threshold for the number of populations occupied (that needs to be exceeded) for all populations to persist.}
 
-\item{\code{results_selection}}{List of results selection from ("abundance", "ema", "extirpation", "harvested", "occupancy").}
+\item{\code{results_selection}}{List of results selection from ("abundance", "ema", "extirpation", "harvested", "occupancy", "human_density").}
 
 \item{\code{attribute_aliases}}{A list of alternative alias names for model attributes (form: \code{alias = "attribute"}) to be used with the set and get attributes methods.}
 

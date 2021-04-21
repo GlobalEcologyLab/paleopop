@@ -665,7 +665,7 @@ PaleoPopModel <- R6Class("PaleoPopModel",
       }
     },
 
-    #' @field results_selection List of results selection from ("abundance", "ema", "extirpation", "harvested", "occupancy").
+    #' @field results_selection List of results selection from ("abundance", "ema", "extirpation", "harvested", "occupancy", "human_density").
     results_selection = function(value) { # use inherited
       if (missing(value)) {
         super$results_selection
