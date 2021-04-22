@@ -5,7 +5,7 @@
 #' and returns simulation results. Each generational time-step includes:
 #' \enumerate{
 #'   \item Density dependence calculations
-#'   \item Enviromental stochasticity calculations
+#'   \item Environmental stochasticity calculations
 #'   \item Generational transition calculations
 #'   \item Harvest calculations
 #'   \item Dispersal calculations

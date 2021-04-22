@@ -14,7 +14,7 @@ region_subset(orig_coords = NULL, orig_matrix = NULL, subset_coords = NULL)
 \item{subset_coords}{Data frame (or matrix) of X-Y subset region coordinates (WGS84) in longitude (degrees West) and latitude (degrees North).}
 }
 \value{
-A matrix of values corresponding to the subset region coordinates (using nearest spatial neighbour if original and subset coordinates differ).
+A matrix of values corresponding to the subset region coordinates (using nearest spatial neighbor if original and subset coordinates differ).
 }
 \description{
 \code{region_subset} generates a region subset of matrix values based on a subset of coordinates within the original region (using nearest spatial neighbour if coordinates differ).

@@ -1,12 +1,15 @@
 Package: paleopop
 Type: Package
-Title: Pattern-oriented Modelling Framework for Coupled Niche-population Paleo-climatic Models
+Title: Pattern-Oriented Modeling Framework for Coupled Niche-Population Paleo-Climatic Models
 Version: 2.1.0
 Authors@R: c(
-    person("Sean", "Haythorne", email = "sean.haythorne@adelaide.edu.au", role = c("aut", "cre")),
-    person("Julia", "Pilowsky", email = "julia.pilowsky@adelaide.edu.au", role = c("aut")))
-Maintainer: Sean Haythorne <sean.haythorne@adelaide.edu.au>
-Description: This extension of the poems pattern-oriented modelling (POM) framework 
+    person("Sean", "Haythorne", email = "sean.haythorne@adelaide.edu.au", role = c("aut")),
+    person("Julia", "Pilowsky", email = "julia.pilowsky@adelaide.edu.au", role = c("aut", "cre"), 
+    comment = c(ORCID = "https://orcid.org/0000-0002-6376-2585")))
+Maintainer: Julia Pilowsky <julia.pilowsky@adelaide.edu.au>
+URL: https://github.com/GlobalEcologyLab/paleopop/
+BugReports: https://github.com/GlobalEcologyLab/paleopop/issues
+Description: This extension of the poems pattern-oriented modeling (POM) framework 
     provides a collection of modules and functions customized for paleontological 
     time-scales, and optimized for single-generation transitions and large populations, 
     across multiple generations.
