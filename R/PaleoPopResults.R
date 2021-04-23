@@ -51,7 +51,6 @@
 #' @importFrom R6 R6Class
 #' @importFrom poems Region
 #' @importFrom poems SimulationResults
-#' @importFrom trend sens.slope
 #' @export PaleoPopResults
 
 PaleoPopResults <- R6Class("PaleoPopResults",

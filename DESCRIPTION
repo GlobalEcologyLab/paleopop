@@ -21,7 +21,8 @@ RoxygenNote: 7.1.1
 Imports:
     poems (>= 1.0.0),
     R6 (>= 2.5.0),
-    sf (>= 0.9)
+    sf (>= 0.9),
+    trend (>= 1.1.4)
 Collate:
     data.R
     PaleoPopModel.R
