@@ -1,7 +1,7 @@
 Package: paleopop
 Type: Package
 Title: Pattern-Oriented Modeling Framework for Coupled Niche-Population Paleo-Climatic Models
-Version: 2.1.0
+Version: 2.1.1
 Authors@R: c(
     person("Sean", "Haythorne", email = "sean.haythorne@adelaide.edu.au", role = c("aut")),
     person("Julia", "Pilowsky", email = "julia.pilowsky@adelaide.edu.au", role = c("aut", "cre"), 
