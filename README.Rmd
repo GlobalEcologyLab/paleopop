@@ -19,6 +19,9 @@ knitr::opts_chunk$set(
 
 [![R-CMD-check](https://github.com/GlobalEcologyLab/paleopop/workflows/R-CMD-check/badge.svg)](https://github.com/GlobalEcologyLab/paleopop/actions)
 
+[![CRAN status](https://www.r-pkg.org/badges/version/paleopop)](https://CRAN.R-project.org/package=paleopop)
+
+[![Download_count](https://cranlogs.r-pkg.org/badges/grand-total/paleopop)](https://CRAN.R-project.org/package=paleopop)
 <!-- badges: end -->
 
 `paleopop` is an extension to `poems`, a spatially-explicit, process-explicit, pattern-oriented framework for modeling population dynamics. This extension adds functionality for modeling large populations at generational time-steps over paleontological time-scales.
