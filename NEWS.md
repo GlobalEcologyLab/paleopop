@@ -1,5 +1,8 @@
 # paleopop 2.1.1
 
+* The test that caused errors on Fedora Linux has been fixed to run consistently.
+* The package `trend` has been added to the namespace.
+
 # paleopop 2.1.0
 
 * Added a `NEWS.md` file to track changes to the package.
