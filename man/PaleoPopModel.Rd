@@ -68,7 +68,7 @@ template_model#is_consistent() # however, the attributes that are filled in are 
 
 \item{\code{transition_rate}}{Rate (numeric) of transition between generations at each time-step.}
 
-\item{\code{standard_deviation}}{Standard deviation (numeric) for applying environmental stochasicity to transition rates.}
+\item{\code{standard_deviation}}{Standard deviation (numeric) for applying environmental stochasticity to transition rates.}
 
 \item{\code{compact_decomposition}}{List containing a compact transposed (Cholesky) decomposition \emph{matrix} (t_decomposition_compact_matrix) and a corresponding \emph{map} of population indices (t_decomposition_compact_map), as per \code{\link{SpatialCorrelation}} class attributes.}
 

@@ -1,3 +1,7 @@
+# paleopop 2.1.2
+
+* Authors have been added to the package description.
+
 # paleopop 2.1.1
 
 * The test that caused errors on Fedora Linux has been fixed to run consistently.
