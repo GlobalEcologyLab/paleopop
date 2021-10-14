@@ -9,7 +9,7 @@ Authors@R: c(
     person("Stuart", "Brown", email = "s.brown@adelaide.edu.au", role = c("aut"),
     comment = c(ORCID = "https://orcid.org/0000-0002-0669-1418")),
     person("Damien", "Fordham", email = "damien.fordham@adelaide.edu.au", role = c("aut"),
-    comment = c(ORCID = "https://orcid.org/0000-0003-2137-5592"))
+    comment = c(ORCID = "https://orcid.org/0000-0003-2137-5592")))
 Maintainer: Julia Pilowsky <julia.pilowsky@adelaide.edu.au>
 URL: https://github.com/GlobalEcologyLab/paleopop/
 BugReports: https://github.com/GlobalEcologyLab/paleopop/issues
@@ -25,8 +25,7 @@ RoxygenNote: 7.1.1
 Imports:
     poems (>= 1.0.0),
     R6 (>= 2.5.0),
-    sf (>= 0.9),
-    trend (>= 1.1.4)
+    sf (>= 0.9)
 Collate:
     data.R
     PaleoPopModel.R

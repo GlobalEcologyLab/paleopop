@@ -399,7 +399,7 @@ PaleoPopModel <- R6Class("PaleoPopModel",
       }
     },
 
-    #' @field standard_deviation Standard deviation (numeric) for applying environmental stochasicity to transition rates.
+    #' @field standard_deviation Standard deviation (numeric) for applying environmental stochasticity to transition rates.
     standard_deviation = function(value) {
       if (missing(value)) {
         if (is.null(self$template_model) || "standard_deviation" %in% self$sample_attributes) {
