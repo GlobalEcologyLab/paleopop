@@ -345,39 +345,6 @@ paleopop_simulator <- function(inputs) {
       }
     }
 
-    ## Harvest calculations ##
-    if (harvest || "harvested" %in% results_selection) {
-      occupied_indices <- occupied_indices[which(as.logical(population_abundances[occupied_indices]))] # > 0
-      occupied_populations <- length(occupied_indices)
-      harvested <- array(0, populations)
-    }
-    if (occupied_populations && harvest) {
-
-      # Focus on human presence in occupied cells
-      harvest_rate <- array(0, occupied_populations)
-      human_presence_indices <- which(as.logical(human_densities[occupied_indices, tm]))
-      human_presence_occupied_indices <- occupied_indices[human_presence_indices]
-
-      # Calculate annual harvest rate
-      if (length(human_presence_indices)) {
-        prey_density <- population_abundances[human_presence_occupied_indices]/harvest_max_n
-        prey_z <- prey_density^harvest_z
-        max_functional_response <- (harvest_max*prey_z)/(harvest_g + prey_z) # at max human density
-        functional_response <- max_functional_response*human_densities[human_presence_occupied_indices, tm] # at current human density
-        harvest_rate[human_presence_indices] <- functional_response/prey_density
-      }
-
-      # Convert to generational time scale
-      harvest_rate <- 1 - (1 - harvest_rate)^years_per_step
-
-      # Calculate numbers harvested
-      harvested[occupied_indices] <- stats::rbinom(occupied_populations, population_abundances[occupied_indices], harvest_rate)
-      
-      # Remove harvested from population
-      population_abundances[occupied_indices] <- population_abundances[occupied_indices] - harvested[occupied_indices]
-
-    } # occupied populations & harvest?
-
     ## Dispersal calculations ##
     if (occupied_populations && dispersal_present) {
 
@@ -479,6 +446,39 @@ paleopop_simulator <- function(inputs) {
       dispersers <- NULL; immigrant_array <- NULL; immigrants <- NULL
 
     } # occupied populations & dispersal present?
+    
+    ## Harvest calculations ##
+    if (harvest || "harvested" %in% results_selection) {
+      occupied_indices <- occupied_indices[which(as.logical(population_abundances[occupied_indices]))] # > 0
+      occupied_populations <- length(occupied_indices)
+      harvested <- array(0, populations)
+    }
+    if (occupied_populations && harvest) {
+      
+      # Focus on human presence in occupied cells
+      harvest_rate <- array(0, occupied_populations)
+      human_presence_indices <- which(as.logical(human_densities[occupied_indices, tm]))
+      human_presence_occupied_indices <- occupied_indices[human_presence_indices]
+      
+      # Calculate annual harvest rate
+      if (length(human_presence_indices)) {
+        prey_density <- population_abundances[human_presence_occupied_indices]/harvest_max_n
+        prey_z <- prey_density^harvest_z
+        max_functional_response <- (harvest_max*prey_z)/(harvest_g + prey_z) # at max human density
+        functional_response <- max_functional_response*human_densities[human_presence_occupied_indices, tm] # at current human density
+        harvest_rate[human_presence_indices] <- functional_response/prey_density
+      }
+      
+      # Convert to generational time scale
+      harvest_rate <- 1 - (1 - harvest_rate)^years_per_step
+      
+      # Calculate numbers harvested
+      harvested[occupied_indices] <- stats::rbinom(occupied_populations, population_abundances[occupied_indices], harvest_rate)
+      
+      # Remove harvested from population
+      population_abundances[occupied_indices] <- population_abundances[occupied_indices] - harvested[occupied_indices]
+      
+    } # occupied populations & harvest?
 
     ## Apply threshold to population abundances ##
     if (!is.null(abundance_threshold)) {
