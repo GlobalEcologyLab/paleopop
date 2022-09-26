@@ -1,3 +1,7 @@
+# paleopop 2.1.3
+
+* Documentation switched to HTML5.
+
 # paleopop 2.1.2
 
 * Authors have been added to the package description.

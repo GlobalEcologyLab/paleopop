@@ -117,32 +117,32 @@ template_model#is_consistent() # however, the attributes that are filled in are 
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-list_consistency}{\code{PaleoPopModel$list_consistency()}}
-\item \href{#method-list_completeness}{\code{PaleoPopModel$list_completeness()}}
-\item \href{#method-clone}{\code{PaleoPopModel$clone()}}
+\item \href{#method-PaleoPopModel-list_consistency}{\code{PaleoPopModel$list_consistency()}}
+\item \href{#method-PaleoPopModel-list_completeness}{\code{PaleoPopModel$list_completeness()}}
+\item \href{#method-PaleoPopModel-clone}{\code{PaleoPopModel$clone()}}
 }
 }
-\if{html}{
-\out{<details ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="poems" data-topic="GenericModel" data-id="get_attribute">}\href{../../poems/html/GenericModel.html#method-get_attribute}{\code{poems::GenericModel$get_attribute()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="poems" data-topic="GenericModel" data-id="get_attribute_aliases">}\href{../../poems/html/GenericModel.html#method-get_attribute_aliases}{\code{poems::GenericModel$get_attribute_aliases()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="get_attribute_names">}\href{../../poems/html/SimulationModel.html#method-get_attribute_names}{\code{poems::SimulationModel$get_attribute_names()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="get_attributes">}\href{../../poems/html/SimulationModel.html#method-get_attributes}{\code{poems::SimulationModel$get_attributes()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="incomplete_attributes">}\href{../../poems/html/SimulationModel.html#method-incomplete_attributes}{\code{poems::SimulationModel$incomplete_attributes()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="inconsistent_attributes">}\href{../../poems/html/SimulationModel.html#method-inconsistent_attributes}{\code{poems::SimulationModel$inconsistent_attributes()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="initialize">}\href{../../poems/html/SimulationModel.html#method-initialize}{\code{poems::SimulationModel$initialize()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="is_complete">}\href{../../poems/html/SimulationModel.html#method-is_complete}{\code{poems::SimulationModel$is_complete()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="is_consistent">}\href{../../poems/html/SimulationModel.html#method-is_consistent}{\code{poems::SimulationModel$is_consistent()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="new_clone">}\href{../../poems/html/SimulationModel.html#method-new_clone}{\code{poems::SimulationModel$new_clone()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="set_attributes">}\href{../../poems/html/SimulationModel.html#method-set_attributes}{\code{poems::SimulationModel$set_attributes()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="set_sample_attributes">}\href{../../poems/html/SimulationModel.html#method-set_sample_attributes}{\code{poems::SimulationModel$set_sample_attributes()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="poems" data-topic="GenericModel" data-id="get_attribute"><a href='../../poems/html/GenericModel.html#method-GenericModel-get_attribute'><code>poems::GenericModel$get_attribute()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="poems" data-topic="GenericModel" data-id="get_attribute_aliases"><a href='../../poems/html/GenericModel.html#method-GenericModel-get_attribute_aliases'><code>poems::GenericModel$get_attribute_aliases()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="get_attribute_names"><a href='../../poems/html/SimulationModel.html#method-SimulationModel-get_attribute_names'><code>poems::SimulationModel$get_attribute_names()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="get_attributes"><a href='../../poems/html/SimulationModel.html#method-SimulationModel-get_attributes'><code>poems::SimulationModel$get_attributes()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="incomplete_attributes"><a href='../../poems/html/SimulationModel.html#method-SimulationModel-incomplete_attributes'><code>poems::SimulationModel$incomplete_attributes()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="inconsistent_attributes"><a href='../../poems/html/SimulationModel.html#method-SimulationModel-inconsistent_attributes'><code>poems::SimulationModel$inconsistent_attributes()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="initialize"><a href='../../poems/html/SimulationModel.html#method-SimulationModel-initialize'><code>poems::SimulationModel$initialize()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="is_complete"><a href='../../poems/html/SimulationModel.html#method-SimulationModel-is_complete'><code>poems::SimulationModel$is_complete()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="is_consistent"><a href='../../poems/html/SimulationModel.html#method-SimulationModel-is_consistent'><code>poems::SimulationModel$is_consistent()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="new_clone"><a href='../../poems/html/SimulationModel.html#method-SimulationModel-new_clone'><code>poems::SimulationModel$new_clone()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="set_attributes"><a href='../../poems/html/SimulationModel.html#method-SimulationModel-set_attributes'><code>poems::SimulationModel$set_attributes()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="poems" data-topic="SimulationModel" data-id="set_sample_attributes"><a href='../../poems/html/SimulationModel.html#method-SimulationModel-set_sample_attributes'><code>poems::SimulationModel$set_sample_attributes()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-list_consistency"></a>}}
-\if{latex}{\out{\hypertarget{method-list_consistency}{}}}
+\if{html}{\out{<a id="method-PaleoPopModel-list_consistency"></a>}}
+\if{latex}{\out{\hypertarget{method-PaleoPopModel-list_consistency}{}}}
 \subsection{Method \code{list_consistency()}}{
 Returns a boolean to indicate if (optionally selected or all) model attributes (such as dimensions) are consistent.
 \subsection{Usage}{
@@ -161,8 +161,8 @@ List of booleans (or NAs) to indicate consistency of selected/all attributes.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-list_completeness"></a>}}
-\if{latex}{\out{\hypertarget{method-list_completeness}{}}}
+\if{html}{\out{<a id="method-PaleoPopModel-list_completeness"></a>}}
+\if{latex}{\out{\hypertarget{method-PaleoPopModel-list_completeness}{}}}
 \subsection{Method \code{list_completeness()}}{
 Returns a list of booleans (or NAs) for each parameter to indicate attributes that are necessary to simulate the model have been set and are consistent/valid.
 \subsection{Usage}{
@@ -174,8 +174,8 @@ List of booleans (or NAs) for each parameter to indicate to indicate completenes
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PaleoPopModel-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PaleoPopModel-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

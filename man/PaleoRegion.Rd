@@ -61,23 +61,23 @@ raster::plot(region$temporal_mask_raster()[[10]], main = "Ring Island (last time
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{PaleoRegion$new()}}
-\item \href{#method-raster_from_values}{\code{PaleoRegion$raster_from_values()}}
-\item \href{#method-temporal_mask_raster}{\code{PaleoRegion$temporal_mask_raster()}}
-\item \href{#method-clone}{\code{PaleoRegion$clone()}}
+\item \href{#method-PaleoRegion-new}{\code{PaleoRegion$new()}}
+\item \href{#method-PaleoRegion-raster_from_values}{\code{PaleoRegion$raster_from_values()}}
+\item \href{#method-PaleoRegion-temporal_mask_raster}{\code{PaleoRegion$temporal_mask_raster()}}
+\item \href{#method-PaleoRegion-clone}{\code{PaleoRegion$clone()}}
 }
 }
-\if{html}{
-\out{<details open ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="poems" data-topic="GenericClass" data-id="new_clone">}\href{../../poems/html/GenericClass.html#method-new_clone}{\code{poems::GenericClass$new_clone()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="poems" data-topic="Region" data-id="raster_is_consistent">}\href{../../poems/html/Region.html#method-raster_is_consistent}{\code{poems::Region$raster_is_consistent()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="poems" data-topic="GenericClass" data-id="new_clone"><a href='../../poems/html/GenericClass.html#method-GenericClass-new_clone'><code>poems::GenericClass$new_clone()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="poems" data-topic="Region" data-id="raster_is_consistent"><a href='../../poems/html/Region.html#method-Region-raster_is_consistent'><code>poems::Region$raster_is_consistent()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PaleoRegion-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PaleoRegion-new}{}}}
 \subsection{Method \code{new()}}{
 Initialization method sets temporally changing raster layers for paleontological region.
 \subsection{Usage}{
@@ -97,8 +97,8 @@ Initialization method sets temporally changing raster layers for paleontological
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-raster_from_values"></a>}}
-\if{latex}{\out{\hypertarget{method-raster_from_values}{}}}
+\if{html}{\out{<a id="method-PaleoRegion-raster_from_values"></a>}}
+\if{latex}{\out{\hypertarget{method-PaleoRegion-raster_from_values}{}}}
 \subsection{Method \code{raster_from_values()}}{
 Converts an array (or matrix) of values into a raster (or stack) consistent with the region raster (matching extent, resolution, and finite/NA cells), and with the temporal mask (if any) applied.
 \subsection{Usage}{
@@ -117,8 +117,8 @@ A \emph{RasterLayer} (or \emph{RasterStack/Brick}) object consistent with the re
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-temporal_mask_raster"></a>}}
-\if{latex}{\out{\hypertarget{method-temporal_mask_raster}{}}}
+\if{html}{\out{<a id="method-PaleoRegion-temporal_mask_raster"></a>}}
+\if{latex}{\out{\hypertarget{method-PaleoRegion-temporal_mask_raster}{}}}
 \subsection{Method \code{temporal_mask_raster()}}{
 Returns the temporal mask as a raster stack/brick object consistent with the region raster.
 \subsection{Usage}{
@@ -130,8 +130,8 @@ A \emph{RasterStack/Brick}) object with temporal mask values of 1 (true) and NA 
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PaleoRegion-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PaleoRegion-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{
