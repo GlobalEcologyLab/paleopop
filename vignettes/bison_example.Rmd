@@ -38,7 +38,7 @@ for simulation and an output directory for results.
 ```{r setup}
 library(poems)
 library(paleopop)
-parallel_cores <- 2
+parallel_cores <- 1
 output_dir <- tempdir()
 ```
 
@@ -262,12 +262,12 @@ values so as to create a prior, and use these to parameterize different
 simulations. Here, we will sample each range of values *uniformly* so as
 to create an *uninformative* prior, but the LHS generator object offers
 options for sampling along different distributions to create an
-*informative* prior. For the sake of this example, we will sample 100
-different parameter combinations, but it is advisable to run more in
-order to fully sample the parameter space.
+*informative* prior. For the sake of this example, we will sample 10
+different parameter combinations, but it is advisable to run thousands
+in order to fully sample the parameter space.
 
 ```{r latin hypercube sampling}
-nsims <- 100 # adjust to run your own example if desired
+nsims <- 10 # adjust to run your own example if desired
 
 lhs_generator <- LatinHypercubeSampler$new()
 lhs_generator$set_uniform_parameter("standard_deviation", lower = 0, upper = sqrt(0.06))

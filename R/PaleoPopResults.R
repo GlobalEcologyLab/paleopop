@@ -51,6 +51,7 @@
 #' @importFrom R6 R6Class
 #' @importFrom poems Region
 #' @importFrom poems SimulationResults
+#' @importFrom trend sens.slope
 #' @export PaleoPopResults
 
 PaleoPopResults <- R6Class("PaleoPopResults",
@@ -235,9 +236,9 @@ PaleoPopResults <- R6Class("PaleoPopResults",
       if (missing(value)) {
         if (is.null(private$.abundance_trend) && !is.null(self$parent) && !is.null(self$abundance)) {
           if (is.numeric(self$trend_interval) && min(self$trend_interval) >= 1 && max(self$trend_interval) <= length(self$abundance)) {
-            private$.abundance_trend <- as.numeric(trend::sens.slope(self$abundance[self$trend_interval])$estimates)
+            private$.abundance_trend <- as.numeric(sens.slope(self$abundance[self$trend_interval])$estimates)
           } else {
-            private$.abundance_trend <- as.numeric(trend::sens.slope(self$abundance)$estimates)
+            private$.abundance_trend <- as.numeric(sens.slope(self$abundance)$estimates)
           }
         }
         private$.abundance_trend

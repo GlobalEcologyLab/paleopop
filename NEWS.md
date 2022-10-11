@@ -1,3 +1,7 @@
+# paleopop 2.1.4
+
+* The vignette has been tweaked to compile more quickly on one thread.
+
 # paleopop 2.1.3
 
 * Documentation switched to HTML5.
