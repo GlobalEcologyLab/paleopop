@@ -361,19 +361,15 @@ error messages for failed calculations.
 
 Now that we've calculated some summary metrics, based on outputs from
 `PaleoPopResults` like extinction time and abundance trend, we can
-examine the simulation results.
+examine the simulation results. Here I show the simulated extinction times.
 
 ```{r histograms, fig.align = "center", fig.width = 7, fig.height = 5}
-hist(metrics_manager$summary_metric_data$abundance_trend, 
-     main = "Histogram of abundance trend", xlab = "Abundance trend")
-hist(metrics_manager$summary_metric_data$extinction_time, 
-     main = "Histogram of extinction time", xlab = "Extinction time (years BP)")
+metrics_manager$summary_metric_data$extinction_time
 ```
 
-Looking at these results, both of these summary metrics, abundance trend
+Both of these summary metrics, abundance trend
 over the first ten time steps and extinction time, could be a suitable
-metric to converge toward a validation target, since there is a spread
-of outcomes.
+metric to converge toward a validation target.
 
 From here, you may continue with the `poems` workflow, as explained in
 the `poems`

@@ -6,3 +6,6 @@
 ^LICENSE\.md$
 ^cran-comments\.md$
 ^CRAN-RELEASE$
+^CRAN-SUBMISSION$
+^doc$
+^Meta$
