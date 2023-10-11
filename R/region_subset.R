@@ -1,6 +1,6 @@
-#' Function generates a region subset of matrix values based on a subset of coordinates within the original region (using nearest spatial neighbour if coordinates differ).
+#' Function generates a region subset of matrix values based on a subset of coordinates within the original region (using nearest spatial neighbor if coordinates differ).
 #'
-#' \code{region_subset} generates a region subset of matrix values based on a subset of coordinates within the original region (using nearest spatial neighbour if coordinates differ).
+#' \code{region_subset} generates a region subset of matrix values based on a subset of coordinates within the original region (using nearest spatial neighbor if coordinates differ).
 #'
 #' @examples 
 #' coordinates <- data.frame(x = rep(seq(-178.02, -178.06, -0.01), 5),
@@ -89,7 +89,7 @@ region_subset = function(orig_coords = NULL, orig_matrix = NULL, subset_coords =
   orig_coords <- cbind(orig_coords, ret)
   subset_coords <- sf::st_as_sf(subset_coords, coords = c("x", "y"), crs = 4326)
 
-  # Join coordinates by matching to nearest spatial neighbour
+  # Join coordinates by matching to nearest spatial neighbor
   joined_ids <- as.data.frame(sf::st_join(x = subset_coords, y = orig_coords, join = sf::st_nearest_feature))[, 1:2]
 
   # Return the subset of the original matrix corresponding to the joined ID's
