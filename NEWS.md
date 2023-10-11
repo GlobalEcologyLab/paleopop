@@ -1,3 +1,7 @@
+# paleopop 2.1.5
+
+* Maintainer has updated to new email address.
+
 # paleopop 2.1.4
 
 * The vignette has been tweaked to compile more quickly on one thread.
