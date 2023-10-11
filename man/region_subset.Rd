@@ -2,7 +2,7 @@
 % Please edit documentation in R/region_subset.R
 \name{region_subset}
 \alias{region_subset}
-\title{Function generates a region subset of matrix values based on a subset of coordinates within the original region (using nearest spatial neighbour if coordinates differ).}
+\title{Function generates a region subset of matrix values based on a subset of coordinates within the original region (using nearest spatial neighbor if coordinates differ).}
 \usage{
 region_subset(orig_coords = NULL, orig_matrix = NULL, subset_coords = NULL)
 }
@@ -17,7 +17,7 @@ region_subset(orig_coords = NULL, orig_matrix = NULL, subset_coords = NULL)
 A matrix of values corresponding to the subset region coordinates (using nearest spatial neighbor if original and subset coordinates differ).
 }
 \description{
-\code{region_subset} generates a region subset of matrix values based on a subset of coordinates within the original region (using nearest spatial neighbour if coordinates differ).
+\code{region_subset} generates a region subset of matrix values based on a subset of coordinates within the original region (using nearest spatial neighbor if coordinates differ).
 }
 \examples{
 coordinates <- data.frame(x = rep(seq(-178.02, -178.06, -0.01), 5),

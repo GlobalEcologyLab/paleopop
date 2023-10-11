@@ -41,7 +41,6 @@ Suggests:
     rmarkdown,
     markdown,
     dplyr,
-    raster,
-    sf
+    raster
 VignetteBuilder: knitr
 Config/testthat/edition: 3
