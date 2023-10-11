@@ -3,7 +3,7 @@
 - Local R 4.3.1 installation on Windows 10
 - Local R 4.3.1 installation on macOS 14.0 (intel chip)
 - Windows, R-devel (via win-builder)
-- Ubuntu Linux 20.04.1 LTS, R-release (via r-hub)
+- Fedora Linux, R-devel (via r-hub)
 
 # R CMD check results
 
