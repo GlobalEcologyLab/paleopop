@@ -21,7 +21,12 @@
 #'     \item{\code{initial_abundance}}{Array of initial abundances for each population.}
 #'     \item{\code{transition_rate}}{Rate of transition (or fecundity) between generations.}
 #'     \item{\code{standard_deviation}}{Standard deviation applied to transition rates.}
-#'     \item{\code{compact_decomposition}}{List containing a compact transposed (Cholesky) decomposition \emph{matrix} (t_decomposition_compact_matrix) and a corresponding \emph{map} of population indices (t_decomposition_compact_map), as per \code{\link{SpatialCorrelation}} class attributes.}
+#'     \item{\code{compact_decomposition}}{List containing a compact transposed 
+#'     (Cholesky) decomposition \emph{matrix} (t_decomposition_compact_matrix) 
+#'     and a corresponding \emph{map} of population indices 
+#'     (t_decomposition_compact_map), as per 
+#'     \code{\link[poems:SpatialCorrelation]{SpatialCorrelation}} class 
+#'     attributes.}
 #'     \item{\code{carrying_capacity}}{Matrix of carrying capacities (\emph{populations} rows by \emph{time_steps} columns).}
 #'     \item{\code{density_dependence}}{Density dependence type ("competition", "logistic", or "ceiling").}
 #'     \item{\code{growth_rate_max}}{Maximum growth rate (for "competition" or "logistic" density dependence).}
@@ -31,7 +36,7 @@
 #'     \item{\code{harvest_z}}{The \emph{Z} parameter in the harvest function.}
 #'     \item{\code{harvest_max_n}}{Maximum density per grid cell.}
 #'     \item{\code{human_density}}{Matrix of human density (fraction) (\emph{populations} rows by \emph{time_steps} columns).}
-#'     \item{\code{dispersal_data}}{List of data frames of non-zero dispersal rates and indices for constructing a compact dispersal matrix, and optional changing rates over time, as per class \code{\link{DispersalGenerator}} \emph{dispersal_data} attribute.}
+#'     \item{\code{dispersal_data}}{List of data frames of non-zero dispersal rates and indices for constructing a compact dispersal matrix, and optional changing rates over time, as per class \code{\link[poems:DispersalGenerator]{DispersalGenerator}} \emph{dispersal_data} attribute.}
 #'     \item{\code{dispersal_target_k}}{Target population carrying capacity threshold for density dependent dispersal.}
 #'     \item{\code{abundance_threshold}}{Abundance threshold (that needs to be exceeded) for each population to persist.}
 #'     \item{\code{occupancy_threshold}}{Threshold for the number of populations occupied (that needs to be exceeded) for all populations to persist.}

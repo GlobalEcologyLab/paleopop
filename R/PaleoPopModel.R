@@ -2,7 +2,7 @@
 #'
 #' @description \code{\link[R6:R6Class]{R6}} class representing a
 #' spatially-explicit demographic-based population model. It extends the
-#' \code{\link{SimulationModel}} class with parameters for the
+#' \code{\link[poems:SimulationModel]{poems}} class with parameters for the
 #' \code{\link{paleopop_simulator}}. It inherits functionality for creating a
 #' nested model, whereby a nested template model with fixed parameters is
 #' maintained when a model is cloned for various sampled parameters. Also
@@ -289,7 +289,7 @@ PaleoPopModel <- R6Class("PaleoPopModel",
       }
     },
 
-    #' @field region A \code{\link{Region}} (or inherited class) object specifying the study region.
+    #' @field region A \code{\link[poems:Region]{Region}} (or inherited class) object specifying the study region.
     region = function(value) { # inherited
       if (missing(value)) {
         super$region
@@ -416,7 +416,12 @@ PaleoPopModel <- R6Class("PaleoPopModel",
       }
     },
 
-    #' @field compact_decomposition List containing a compact transposed (Cholesky) decomposition \emph{matrix} (t_decomposition_compact_matrix) and a corresponding \emph{map} of population indices (t_decomposition_compact_map), as per \code{\link{SpatialCorrelation}} class attributes.
+    #' @field compact_decomposition List containing a compact transposed 
+    #' (Cholesky) decomposition \emph{matrix} (t_decomposition_compact_matrix) 
+    #' and a corresponding \emph{map} of population indices 
+    #' (t_decomposition_compact_map), as per 
+    #' \code{\link[poems:SpatialCorrelation]{SpatialCorrelation}} class 
+    #' attributes.
     compact_decomposition = function(value) {
       if (is.null(self$template_model) || "compact_decomposition" %in% self$sample_attributes) {
         if (missing(value)) {
@@ -487,7 +492,11 @@ PaleoPopModel <- R6Class("PaleoPopModel",
       }
     },
 
-    #' @field dispersal_data List of data frames of non-zero dispersal rates and indices for constructing a compact dispersal matrix, and optional changing rates over time, as per class \code{\link{DispersalGenerator}} \emph{dispersal_data} attribute.
+    #' @field dispersal_data List of data frames of non-zero dispersal rates and
+    #'  indices for constructing a compact dispersal matrix, and optional 
+    #'  changing rates over time, as per class 
+    #'  \code{\link[poems:DispersalGenerator]{DispersalGenerator}} 
+    #'  \emph{dispersal_data} attribute.
     dispersal_data = function(value) {
       if (is.null(self$template_model) || "dispersal_data" %in% self$sample_attributes) {
         if (missing(value)) {

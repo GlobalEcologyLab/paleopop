@@ -6,7 +6,7 @@
 \description{
 \code{\link[R6:R6Class]{R6}} class representing a
 spatially-explicit demographic-based population model. It extends the
-\code{\link{SimulationModel}} class with parameters for the
+\code{\link[poems:SimulationModel]{poems}} class with parameters for the
 \code{\link{paleopop_simulator}}. It inherits functionality for creating a
 nested model, whereby a nested template model with fixed parameters is
 maintained when a model is cloned for various sampled parameters. Also
@@ -52,7 +52,7 @@ template_model#is_consistent() # however, the attributes that are filled in are 
 
 \item{\code{model_attributes}}{A vector of model attribute names.}
 
-\item{\code{region}}{A \code{\link{Region}} (or inherited class) object specifying the study region.}
+\item{\code{region}}{A \code{\link[poems:Region]{Region}} (or inherited class) object specifying the study region.}
 
 \item{\code{coordinates}}{Data frame (or matrix) of X-Y population coordinates (WGS84) in longitude (degrees West) and latitude (degrees North).}
 
@@ -70,7 +70,12 @@ template_model#is_consistent() # however, the attributes that are filled in are 
 
 \item{\code{standard_deviation}}{Standard deviation (numeric) for applying environmental stochasticity to transition rates.}
 
-\item{\code{compact_decomposition}}{List containing a compact transposed (Cholesky) decomposition \emph{matrix} (t_decomposition_compact_matrix) and a corresponding \emph{map} of population indices (t_decomposition_compact_map), as per \code{\link{SpatialCorrelation}} class attributes.}
+\item{\code{compact_decomposition}}{List containing a compact transposed 
+(Cholesky) decomposition \emph{matrix} (t_decomposition_compact_matrix) 
+and a corresponding \emph{map} of population indices 
+(t_decomposition_compact_map), as per 
+\code{\link[poems:SpatialCorrelation]{SpatialCorrelation}} class 
+attributes.}
 
 \item{\code{carrying_capacity}}{Array (or matrix) of carrying capacity values at each population cell (across time).}
 
@@ -78,7 +83,11 @@ template_model#is_consistent() # however, the attributes that are filled in are 
 
 \item{\code{growth_rate_max}}{Maximum growth rate (utilized by density dependence processes).}
 
-\item{\code{dispersal_data}}{List of data frames of non-zero dispersal rates and indices for constructing a compact dispersal matrix, and optional changing rates over time, as per class \code{\link{DispersalGenerator}} \emph{dispersal_data} attribute.}
+\item{\code{dispersal_data}}{List of data frames of non-zero dispersal rates and
+indices for constructing a compact dispersal matrix, and optional 
+changing rates over time, as per class 
+\code{\link[poems:DispersalGenerator]{DispersalGenerator}} 
+\emph{dispersal_data} attribute.}
 
 \item{\code{dispersal_target_k}}{Target population carrying capacity threshold for density dependent dispersal.}
 

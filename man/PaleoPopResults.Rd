@@ -6,7 +6,7 @@
 \description{
 \code{\link[R6:R6Class]{R6}} class for encapsulating and dynamically generating
 spatially-explicit \code{\link{paleopop_simulator}} results, as well as optional
-re-generated \code{\link{Generator}} for niche carrying capacity and/or human
+re-generated \code{\link[poems:Generator]{Generator}} for niche carrying capacity and/or human
 density.
 }
 \examples{
@@ -67,7 +67,7 @@ results_model$ema # expected minimum abundance
 \describe{
 \item{\code{model_attributes}}{A vector of model attribute names.}
 
-\item{\code{region}}{A \code{\link{Region}} (or inherited class) object specifying the study region.}
+\item{\code{region}}{A \code{\link[poems:Region]{Region}} (or inherited class) object specifying the study region.}
 
 \item{\code{coordinates}}{Data frame (or matrix) of X-Y population coordinates (WGS84) in longitude (degrees West) and latitude (degrees North).}
 

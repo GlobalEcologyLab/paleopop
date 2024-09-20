@@ -18,7 +18,7 @@
 #'     \code{\link[poems:SimulationModel]{SimulationModel}}, this class encapsulates the input parameters
 #'     utilized by the \code{\link{paleopop_simulator}}.
 #'   \item \code{\link{PaleoPopResults}} class: Inherited from
-#'     \code{\link{SimulationResults}}, this class encapsulates the results generated
+#'     \code{\link[poems:SimulationResults]{SimulationResults}}, this class encapsulates the results generated
 #'     by the \code{\link{paleopop_simulator}}, as well as dynamically generating
 #'     additional derived results.
 #' }

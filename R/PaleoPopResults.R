@@ -3,7 +3,7 @@
 #' @description
 #' \code{\link[R6:R6Class]{R6}} class for encapsulating and dynamically generating
 #' spatially-explicit \code{\link{paleopop_simulator}} results, as well as optional
-#' re-generated \code{\link{Generator}} for niche carrying capacity and/or human
+#' re-generated \code{\link[poems:Generator]{Generator}} for niche carrying capacity and/or human
 #' density.
 #' 
 #' @examples 
@@ -138,7 +138,7 @@ PaleoPopResults <- R6Class("PaleoPopResults",
       }
     },
 
-    #' @field region A \code{\link{Region}} (or inherited class) object specifying the study region.
+    #' @field region A \code{\link[poems:Region]{Region}} (or inherited class) object specifying the study region.
     region = function(value) { # inherited
       if (missing(value)) {
         super$region
