@@ -1,14 +1,17 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# paleopop
+# paleopop <img src='man/figures/logo.png' align="right" height="125" />
 
 <!-- badges: start -->
 
+[![Paper_doi](https://img.shields.io/badge/doi-10.1111/geb.13601-orange.svg)](https://doi.org/10.1111/geb.13601)
 [![R-CMD-check](https://github.com/GlobalEcologyLab/paleopop/workflows/R-CMD-check/badge.svg)](https://github.com/GlobalEcologyLab/paleopop/actions)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/paleopop)](https://CRAN.R-project.org/package=paleopop)
-[![Download\_count](https://cranlogs.r-pkg.org/badges/grand-total/paleopop)](https://CRAN.R-project.org/package=paleopop)
+[![Download_count](https://cranlogs.r-pkg.org/badges/grand-total/paleopop)](https://CRAN.R-project.org/package=paleopop)
+[![Last
+commit](https://img.shields.io/github/last-commit/GlobalEcologyLab/paleopop.svg)](https://github.com/GlobalEcologyLab/paleopop/commits/master)
 <!-- badges: end -->
 
 `paleopop` is an extension to `poems`, a spatially-explicit,
@@ -113,23 +116,23 @@ results <- paleopop_simulator(model_template)
 results # examine
 #> $abundance
 #>       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#>  [1,]   39   74  150  252  424  666  667  766  871   995
-#>  [2,]  117  229  374  528  670  930  777  878  832   963
-#>  [3,] 1345 1063  913  938 1006  846  764  967  801   765
-#>  [4,]   27   63   99  171  315  531  825  905 1081   898
-#>  [5,]  382  532  707  846  979  940 1065  931 1023   977
-#>  [6,]  523  715  876 1062 1113 1092 1355 1377  922   684
-#>  [7,]  739  906  872  916 1183 1164 1086 1047  918   972
-#>  [8,] 1238 1230 1400 1011 1093 1209 1184 1208 1007   953
-#>  [9,] 1178 1100  954  999  916  831  745  881  928  1049
+#>  [1,]    0    0    0    0    0    0    0    0    0     0
+#>  [2,]   39   84  154  263  404  541  763  740  925  1144
+#>  [3,]   20   48   88  166  249  388  488  620  633   728
+#>  [4,]    0    0    0    0    0    0    0    0    0     0
+#>  [5,]  220  297  461  641  879  983  908  936 1095   831
+#>  [6,]  398  555  747  776 1076  896  939  912  984   936
+#>  [7,]  726  820 1007 1053 1068 1063  857  865  982  1096
+#>  [8,] 1189  778  856  856  939  871  826  927  996  1191
+#>  [9,] 1174  979  806  928  931  997  938  923  980   866
 #> [10,]    0    0    0    0    0    0    0    0    0     0
 #> [11,]    0    0    0    0    0    0    0    0    0     0
 #> [12,]    0    0    0    0    0    0    0    0    0     0
-#> [13,]  450  615  682  811  852 1035  984  951 1042  1055
-#> [14,]  174  258  377  603  779  889  934  978  974   942
-#> [15,]  600  805  948  919  887  926 1043  867 1003   866
-#> [16,] 1313  882 1015 1052 1020  964  925 1003 1008  1049
-#> [17,]  904 1035  983 1154 1043  887  907 1043  969   940
+#> [13,]  157  288  474  658  806  843  930  951  959   905
+#> [14,]  252  405  606  792  882  976 1011 1130 1113  1113
+#> [15,]  113  209  344  468  633  808  842 1120 1189   990
+#> [16,]  691  746  994  783  843  922  958  915 1101   922
+#> [17,]  540  729  937  930  862  915  895  758  958  1039
 raster::plot(region$raster_from_values(results$abundance[,10]),
              main = "Final abundance", xlab = "Longitude (degrees)", 
              ylab = "Latitude (degrees)", colNA = "blue")
@@ -139,3 +142,13 @@ raster::plot(region$raster_from_values(results$abundance[,10]),
 
 A practical example of how to use `paleopop`, with more complex
 parameterization, can be found in the vignette.
+
+## Citation
+
+You may cite `paleopop` in publications using our software paper in
+*Global Ecology and Biogeography*:
+
+Pilowsky, J. A., Haythorne, S., Brown, S. C., Krapp, M., Armstrong, E.,
+Brook, B. W., Rahbek, C., & Fordham, D. A. (2022). Range and extinction
+dynamics of the steppe bison in Siberia: A pattern‐oriented modelling
+approach. *Global Ecology and Biogeography*, *31*(12), 2483-2497.
