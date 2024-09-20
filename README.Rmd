@@ -13,13 +13,14 @@ knitr::opts_chunk$set(
 )
 ```
 
-# paleopop
+# paleopop <img src='man/figures/logo.png' align="right" height="125" />
 
 <!-- badges: start -->
-
+[![Paper_doi](https://img.shields.io/badge/doi-10.1111/geb.13601-orange.svg)](https://doi.org/10.1111/geb.13601)
 [![R-CMD-check](https://github.com/GlobalEcologyLab/paleopop/workflows/R-CMD-check/badge.svg)](https://github.com/GlobalEcologyLab/paleopop/actions)
 [![CRAN status](https://www.r-pkg.org/badges/version/paleopop)](https://CRAN.R-project.org/package=paleopop)
 [![Download_count](https://cranlogs.r-pkg.org/badges/grand-total/paleopop)](https://CRAN.R-project.org/package=paleopop)
+[![Last commit](https://img.shields.io/github/last-commit/GlobalEcologyLab/paleopop.svg)](https://github.com/GlobalEcologyLab/paleopop/commits/master)
 <!-- badges: end -->
 
 `paleopop` is an extension to `poems`, a spatially-explicit, process-explicit, pattern-oriented framework for modeling population dynamics. This extension adds functionality for modeling large populations at generational time-steps over paleontological time-scales.
@@ -96,3 +97,9 @@ raster::plot(region$raster_from_values(results$abundance[,10]),
 ```
 
 A practical example of how to use `paleopop`, with more complex parameterization, can be found in the vignette.
+
+## Citation
+
+You may cite `paleopop` in publications using our software paper in *Global Ecology and Biogeography*:
+
+Pilowsky, J. A., Haythorne, S., Brown, S. C., Krapp, M., Armstrong, E., Brook, B. W., Rahbek, C., & Fordham, D. A. (2022). Range and extinction dynamics of the steppe bison in Siberia: A pattern‐oriented modelling approach. *Global Ecology and Biogeography*, *31*(12), 2483-2497.

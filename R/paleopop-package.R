@@ -1,3 +1,5 @@
+#' @keywords internal
+"_PACKAGE"
 #' paleopop: Ensemble population modeling and simulation on paleo time scales
 #'
 #' The \code{paleopop} package is an extension of the \code{\link[poems:poems]{poems}} framework of \code{\link[R6:R6Class]{R6}} classes, which 
@@ -21,7 +23,6 @@
 #'     additional derived results.
 #' }
 #' 
-#' @docType package
 #' @name paleopop
 #' @importFrom utils read.csv read.table
 NULL

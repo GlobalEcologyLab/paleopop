@@ -1,9 +1,8 @@
 # Test environments
 
-- Local R 4.3.1 installation on Windows 10
-- Local R 4.3.1 installation on macOS 14.0 (intel chip)
+- Local R 4.4.1 installation on macOS 14.0 (intel chip)
 - Windows, R-devel (via win-builder)
-- Fedora Linux, R-devel (via r-hub)
+- Apple Silicon, R 4.4.1 (via mac-builder)
 
 # R CMD check results
 
@@ -11,16 +10,3 @@
 
 # Comments on check results
 
-> New submission
-  
-> Package was archived on CRAN
-  
-> Possibly misspelled words in DESCRIPTION:
-    Paleo (4:9)
-    paleontological (18:67)
-    
-> CRAN repository db overrides:
-    X-CRAN-Comment: Archived on 2023-07-07 as requires archived package
-      'poems'.
-      
-      The words flagged as misspelled are common words in the field of paleo-ecology.
