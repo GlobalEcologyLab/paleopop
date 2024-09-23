@@ -1,3 +1,7 @@
+# paleopop 2.1.6
+
+* paleopop is going back up on CRAN because its dependency, `poems`, is back up.
+
 # paleopop 2.1.5
 
 * Maintainer has updated to new email address.

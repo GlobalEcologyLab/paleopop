@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 [![Last commit](https://img.shields.io/github/last-commit/GlobalEcologyLab/paleopop.svg)](https://github.com/GlobalEcologyLab/paleopop/commits/master)
 <!-- badges: end -->
 
-`paleopop` is an extension to `poems`, a spatially-explicit, process-explicit, pattern-oriented framework for modeling population dynamics. This extension adds functionality for modeling large populations at generational time-steps over paleontological time-scales.
+`paleopop` is part of the poemsverse. `poems` is a spatially-explicit, process-explicit, pattern-oriented framework for modeling population dynamics. This extension adds functionality for modeling large populations at generational time-steps over paleontological time-scales.
 
 ## Installation
 
