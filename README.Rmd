@@ -27,6 +27,12 @@ knitr::opts_chunk$set(
 
 ## Installation
 
+You can install the latest release of `paleopop` from CRAN with:
+
+```{r cran}
+install.packages("paleopop")
+```
+
 You can install the development version from [GitHub](https://github.com/) with:
 
 ``` r
