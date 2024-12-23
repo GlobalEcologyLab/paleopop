@@ -20,7 +20,7 @@ Description: This extension of the poems pattern-oriented modeling (POM) framewo
 Depends: R (>= 3.6.0)
 License: GPL (>= 3)
 Encoding: UTF-8
-Language: en_AU
+Language: en-AU
 LazyData: true
 RoxygenNote: 7.3.1
 Imports:
