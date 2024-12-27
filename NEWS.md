@@ -1,3 +1,7 @@
+# paleopop 2.1.7
+
+* Fixed the language tag in the DESCRIPTION.
+
 # paleopop 2.1.6
 
 * paleopop is going back up on CRAN because its dependency, `poems`, is back up.
